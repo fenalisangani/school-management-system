@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Teacher Attendance — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / Attendance / Teachers</nav>
+<div class="page-header">
+    <div class="page-header-text"><h1>Teacher Attendance</h1></div>
+    <a href="{% url 'teacher_attendance_create' %}" class="btn btn-primary">+ Mark</a>
+</div>
+<div class="card">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead><tr><th>Teacher</th><th>Date</th><th>Status</th><th>Shift</th></tr></thead>
+            <tbody>
+                {% for r in records %}
+                <tr>
+                    <td><strong>{{ r.teacher }}</strong></td>
+                    <td>{{ r.date }}</td>
+                    <td><span class="badge badge-paid">{{ r.get_status_display }}</span></td>
+                    <td>{{ r.shift|default:"—" }}</td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="4">No records.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include 'partials/pagination.html' %}
+{% endblock %}

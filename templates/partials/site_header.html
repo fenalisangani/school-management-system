@@ -1,0 +1,62 @@
+<header class="site-header" role="banner">
+    <div class="header-left">
+        <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Open navigation menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
+        <div class="header-brand-mini">
+            <span class="header-brand-mark">{% include 'partials/logo.html' %}</span>
+            <div class="header-titles">
+                <h1 class="header-page-title">{{ header_title }}</h1>
+                <p class="header-page-sub">{{ header_subtitle }}</p>
+            </div>
+        </div>
+    </div>
+
+    <nav class="header-quick-nav" aria-label="Quick actions">
+        <a href="{% url 'dashboard' %}" class="header-nav-link {% if request.path == '/' %}is-active{% endif %}">Home</a>
+        <a href="{% url 'student_list' %}" class="header-nav-link {% if '/students/' in request.path %}is-active{% endif %}">Students</a>
+        <a href="{% url 'fee_structure_list' %}" class="header-nav-link {% if '/fees/' in request.path %}is-active{% endif %}">Fees</a>
+        <a href="{% url 'bulk_student_attendance' %}" class="header-nav-link {% if 'bulk' in request.path %}is-active{% endif %}">Attendance</a>
+    </nav>
+
+    <div class="header-right">
+        <div class="header-meta" aria-live="polite">
+            <span class="header-date" id="headerDate">{{ header_date }}</span>
+            <span class="header-time" id="headerTime">{{ header_time }}</span>
+        </div>
+        <span class="header-chip header-chip-inr" title="All fees in Indian Rupees">{{ CURRENCY_SYMBOL }} INR</span>
+        <span class="header-chip header-chip-status" title="System operational">
+            <span class="status-dot" aria-hidden="true"></span> Online
+        </span>
+        <a href="{% url 'bulk_student_attendance' %}" class="btn btn-primary btn-header-cta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            <span class="btn-cta-label">Mark attendance</span>
+        </a>
+        {% if user.is_authenticated %}
+        <details class="header-user-menu">
+            <summary class="header-user" title="Account">
+                <span class="header-user-avatar" aria-hidden="true">{{ user.username|slice:":1" }}</span>
+                <span class="header-user-name">{{ user.get_short_name|default:user.username }}</span>
+                <svg class="header-user-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="user-dropdown">
+                <div class="user-dropdown-head">
+                    <span class="header-user-avatar" aria-hidden="true">{{ user.username|slice:":1" }}</span>
+                    <div>
+                        <strong>{{ user.get_full_name|default:user.username }}</strong>
+                        <span>{{ user.email|default:"Signed in" }}</span>
+                    </div>
+                </div>
+                <a href="{% url 'admin:index' %}" class="user-dropdown-item">Admin panel</a>
+                <a href="{% url 'admin:password_change' %}" class="user-dropdown-item">Change password</a>
+                <form method="post" action="{% url 'logout' %}" class="user-dropdown-form">
+                    {% csrf_token %}
+                    <button type="submit" class="user-dropdown-item danger">Sign out</button>
+                </form>
+            </div>
+        </details>
+        {% endif %}
+    </div>
+</header>

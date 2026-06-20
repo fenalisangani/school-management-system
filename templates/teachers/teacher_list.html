@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Teachers — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / Teachers</nav>
+<div class="page-header">
+    <div class="page-header-text">
+        <h1>Teachers</h1>
+        <p class="page-subtitle">Faculty records & class assignments</p>
+    </div>
+    <div class="actions">
+        <a href="{% url 'teacher_create' %}" class="btn btn-primary">+ Add Teacher</a>
+        <a href="{% url 'teacher_assignment_create' %}" class="btn btn-secondary">Assign</a>
+    </div>
+</div>
+
+<div class="list-toolbar">
+    <form method="get" class="search-form" role="search">
+        <input type="search" name="q" value="{{ query }}" placeholder="Search by name, ID or qualification…" aria-label="Search teachers">
+        <button type="submit" class="btn btn-secondary">Search</button>
+        {% if query %}<a href="{% url 'teacher_list' %}" class="btn btn-secondary">Clear</a>{% endif %}
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead>
+                <tr><th>ID</th><th>Name</th><th>Qualification</th><th>Status</th><th>Assignments</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for t in teachers %}
+                <tr>
+                    <td><strong>{{ t.teacher_id }}</strong></td>
+                    <td>{{ t.full_name }}</td>
+                    <td>{{ t.qualification|default:"—" }}</td>
+                    <td><span class="badge {% if t.employment_status == 'active' %}badge-active{% else %}badge-inactive{% endif %}">{{ t.get_employment_status_display }}</span></td>
+                    <td>{{ t.assignments.count }}</td>
+                    <td>
+                        <div class="row-actions">
+                            <a href="{% url 'teacher_detail' t.pk %}" class="btn-mini">View</a>
+                            <a href="{% url 'teacher_edit' t.pk %}" class="btn-mini">Edit</a>
+                            <a href="{% url 'teacher_delete' t.pk %}" class="btn-mini danger">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="6">{% if query %}No teachers match “{{ query }}”.{% else %}No teachers. <a href="{% url 'teacher_create' %}">Add faculty</a>{% endif %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include 'partials/pagination.html' %}
+{% endblock %}

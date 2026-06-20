@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Subjects — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / <a href="{% url 'class_list' %}">Classes</a> / Subjects</nav>
+<div class="page-header">
+    <div class="page-header-text"><h1>Subjects</h1></div>
+    <a href="{% url 'subject_create' %}" class="btn btn-primary">+ Add Subject</a>
+</div>
+<div class="list-toolbar">
+    <form method="get" class="search-form" role="search">
+        <input type="search" name="q" value="{{ query }}" placeholder="Search by code or name…" aria-label="Search subjects">
+        <button type="submit" class="btn btn-secondary">Search</button>
+        {% if query %}<a href="{% url 'subject_list' %}" class="btn btn-secondary">Clear</a>{% endif %}
+    </form>
+</div>
+<div class="card">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead><tr><th>Code</th><th>Name</th><th>Credits</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for s in subjects %}
+                <tr>
+                    <td><strong>{{ s.code }}</strong></td>
+                    <td>{{ s.name }}</td>
+                    <td>{{ s.credit_hours }}</td>
+                    <td>
+                        <div class="row-actions">
+                            <a href="{% url 'subject_edit' s.pk %}" class="btn-mini">Edit</a>
+                            <a href="{% url 'subject_delete' s.pk %}" class="btn-mini danger">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="4">{% if query %}No subjects match “{{ query }}”.{% else %}No subjects.{% endif %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include 'partials/pagination.html' %}
+{% endblock %}

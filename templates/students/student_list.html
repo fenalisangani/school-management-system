@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Students — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / Students</nav>
+<div class="page-header">
+    <div class="page-header-text">
+        <h1>Students</h1>
+        <p class="page-subtitle">Registration, enrollment & documents</p>
+    </div>
+    <div class="actions">
+        <a href="{% url 'student_create' %}" class="btn btn-primary">+ Register</a>
+        <a href="{% url 'enrollment_create' %}" class="btn btn-secondary">Enroll</a>
+        <a href="{% url 'document_upload' %}" class="btn btn-secondary">Upload doc</a>
+    </div>
+</div>
+
+<div class="list-toolbar">
+    <form method="get" class="search-form" role="search">
+        <input type="search" name="q" value="{{ query }}" placeholder="Search by name, ID, phone or email…" aria-label="Search students">
+        <button type="submit" class="btn btn-secondary">Search</button>
+        {% if query %}<a href="{% url 'student_list' %}" class="btn btn-secondary">Clear</a>{% endif %}
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead>
+                <tr><th>ID</th><th>Name</th><th>Status</th><th>Current Class</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td><strong>{{ s.student_id }}</strong></td>
+                    <td>{{ s.full_name }}</td>
+                    <td><span class="badge badge-{{ s.status }}">{{ s.get_status_display }}</span></td>
+                    <td>
+                        {% for e in s.enrollments.all %}{% if e.is_current %}{{ e.school_class }} · Sec {{ e.section.name }}{% endif %}{% empty %}<span class="text-muted">Not enrolled</span>{% endfor %}
+                    </td>
+                    <td>
+                        <div class="row-actions">
+                            <a href="{% url 'student_detail' s.pk %}" class="btn-mini">Profile</a>
+                            <a href="{% url 'student_edit' s.pk %}" class="btn-mini">Edit</a>
+                            <a href="{% url 'student_delete' s.pk %}" class="btn-mini danger">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="5">{% if query %}No students match “{{ query }}”.{% else %}No students. <a href="{% url 'student_create' %}">Register one</a>{% endif %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include 'partials/pagination.html' %}
+{% endblock %}

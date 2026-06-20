@@ -1,0 +1,60 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('School Management System') }}{% endblock %}
+
+{% block branding %}
+<div id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('School Management System') }}</a></div>
+{% if user.is_anonymous %}{% include "admin/color_theme_toggle.html" %}{% endif %}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+<style>
+:root,
+html[data-theme="light"] {
+    --primary: #4f46e5;
+    --primary-fg: #f8fafc;
+    --secondary: #4338ca;
+    --accent: #6366f1;
+
+    --header-bg: #1e1b4b;
+    --header-color: #f8fafc;
+    --header-branding-color: #c7d2fe;
+    --header-link-color: #c7d2fe;
+
+    --breadcrumbs-bg: #4338ca;
+    --breadcrumbs-fg: #eef1f8;
+    --breadcrumbs-link-fg: #f8fafc;
+
+    --link-fg: #4f46e5;
+    --link-hover-color: #4338ca;
+    --link-selected-fg: #4338ca;
+
+    --button-bg: #4f46e5;
+    --button-fg: #fff;
+    --button-hover-bg: #4338ca;
+    --default-button-bg: #4f46e5;
+    --default-button-hover-bg: #4338ca;
+    --close-button-bg: #94a3b8;
+    --close-button-hover-bg: #4338ca;
+
+    --object-tools-bg: #4338ca;
+    --object-tools-fg: #fff;
+    --object-tools-hover-bg: #1e1b4b;
+
+    --selected-bg: #e0e7ff;
+    --selected-row: #eef2ff;
+    --message-success-bg: #d1fae5;
+
+    --link-fg-dark: #4338ca;
+}
+
+/* Accent details */
+#branding h1, #branding h1 a:link, #branding h1 a:visited { color: var(--header-branding-color); }
+.module h2, .module caption, .inline-group h2 { background: var(--secondary); }
+div.breadcrumbs { background: var(--breadcrumbs-bg); }
+a.button, input[type=submit], input[type=button], .submit-row input, a.button.default,
+input[type=submit].default, .submit-row input.default { background: var(--button-bg); }
+.button.default:hover, input[type=submit].default:hover { background: var(--default-button-hover-bg); }
+</style>
+{% endblock %}

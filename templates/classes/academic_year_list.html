@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Academic Years — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / <a href="{% url 'class_list' %}">Classes</a> / Years</nav>
+<div class="page-header">
+    <div class="page-header-text"><h1>Academic Years</h1></div>
+    <a href="{% url 'academic_year_create' %}" class="btn btn-primary">+ Add Year</a>
+</div>
+<div class="card">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead><tr><th>Name</th><th>Start</th><th>End</th><th>Active</th><th>Archived</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for y in years %}
+                <tr>
+                    <td><strong>{{ y.name }}</strong></td>
+                    <td>{{ y.start_date }}</td>
+                    <td>{{ y.end_date }}</td>
+                    <td>{% if y.is_active %}<span class="badge badge-paid">Yes</span>{% else %}<span class="badge badge-inactive">No</span>{% endif %}</td>
+                    <td>{% if y.is_archived %}<span class="badge badge-pending">Yes</span>{% else %}—{% endif %}</td>
+                    <td>
+                        <div class="row-actions">
+                            <a href="{% url 'academic_year_edit' y.pk %}" class="btn-mini">Edit</a>
+                            <a href="{% url 'academic_year_delete' y.pk %}" class="btn-mini danger">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="6">No years defined.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<a href="{% url 'class_list' %}" class="back-link">← Classes</a>
+{% endblock %}

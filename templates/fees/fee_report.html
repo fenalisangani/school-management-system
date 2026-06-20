@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load inr_tags %}
+
+{% block title %}Fee Reports — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / Fees / Reports</nav>
+<div class="page-header">
+    <div class="page-header-text">
+        <h1>Fee Reports</h1>
+        <p class="page-subtitle">Financial summary in <strong>INR ({{ CURRENCY_SYMBOL }})</strong></p>
+    </div>
+    <div class="actions">
+        <a href="{% url 'fee_payments_export' %}" class="btn btn-primary">⬇ Export to Excel (CSV)</a>
+    </div>
+</div>
+
+<div class="stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 1.5rem;">
+    <article class="stat-card stat-emerald">
+        <div class="stat-icon" style="background:#ecfdf5;color:#10b981">
+            {% include 'partials/icon_inr.html' %}
+        </div>
+        <div class="stat-body">
+            <span class="stat-value">{{ total_collected|inr }}</span>
+            <span class="stat-label">Total collected (INR)</span>
+        </div>
+    </article>
+    <article class="stat-card stat-amber">
+        <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="stat-body">
+            <span class="stat-value">{{ defaulters|length }}</span>
+            <span class="stat-label">Defaulters</span>
+        </div>
+    </article>
+</div>
+
+<div class="detail-grid">
+    <div class="card" style="padding:0">
+        <h2 style="padding:1rem 1.15rem 0;margin:0;font-size:1rem">Recent payments (INR)</h2>
+        <div class="table-scroll">
+            <table class="data-table">
+                <thead><tr><th>Receipt</th><th>Student</th><th>Amount (INR)</th><th>Mode</th><th></th></tr></thead>
+                <tbody>
+                    {% for p in payments %}
+                    <tr>
+                        <td>{{ p.receipt_number }}</td>
+                        <td>{{ p.assignment.student }}</td>
+                        <td>{{ p.amount|inr }}</td>
+                        <td>{{ p.get_payment_mode_display }}</td>
+                        <td><a href="{% url 'fee_receipt' p.pk %}" class="btn-mini">Receipt</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr class="empty-row"><td colspan="5">No payments yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel-card">
+        <h2>Outstanding (INR)</h2>
+        <ul class="list-plain">
+            {% for d in defaulters %}
+            <li>{{ d.student }} — balance <strong>{{ d.balance|inr }}</strong></li>
+            {% empty %}
+            <li style="color:var(--text-muted)">No pending fees</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

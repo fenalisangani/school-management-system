@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ student.full_name }} — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / <a href="{% url 'student_list' %}">Students</a> / {{ student.full_name }}</nav>
+
+<div class="profile-header" style="justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:1rem;">
+        {% if student.photo %}<img src="{{ student.photo.url }}" alt="" class="student-photo">{% endif %}
+        <div>
+            <h1 style="margin:0">{{ student.full_name }}</h1>
+            <p class="page-subtitle">{{ student.student_id }} · <span class="badge badge-{{ student.status }}">{{ student.get_status_display }}</span></p>
+        </div>
+    </div>
+    <div class="row-actions">
+        <a href="{% url 'student_edit' student.pk %}" class="btn btn-secondary">Edit</a>
+        <a href="{% url 'student_delete' student.pk %}" class="btn btn-danger">Delete</a>
+    </div>
+</div>
+
+<div class="detail-grid">
+    <div class="panel-card">
+        <h2>Personal</h2>
+        <dl class="detail-list">
+            <dt>Date of birth</dt><dd>{{ student.date_of_birth }}</dd>
+            <dt>Gender</dt><dd>{{ student.get_gender_display }}</dd>
+            <dt>Phone</dt><dd>{{ student.phone|default:"—" }}</dd>
+            <dt>Email</dt><dd>{{ student.email|default:"—" }}</dd>
+            <dt>Address</dt><dd>{{ student.address|default:"—" }}</dd>
+        </dl>
+    </div>
+    <div class="panel-card">
+        <h2>Guardian</h2>
+        <dl class="detail-list">
+            <dt>Name</dt><dd>{{ student.parent_name|default:"—" }}</dd>
+            <dt>Phone</dt><dd>{{ student.parent_phone|default:"—" }}</dd>
+            <dt>Email</dt><dd>{{ student.parent_email|default:"—" }}</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="detail-grid" style="margin-top:1rem">
+    <div class="panel-card">
+        <h2>Enrollment</h2>
+        <ul class="list-plain">
+            {% for e in student.enrollments.all %}
+            <li>{{ e.academic_year }} — {{ e.school_class }} Sec {{ e.section.name }}{% if e.is_current %} <span class="badge badge-paid">Current</span>{% endif %}</li>
+            {% empty %}<li>Not enrolled</li>{% endfor %}
+        </ul>
+    </div>
+    <div class="panel-card">
+        <h2>Documents</h2>
+        <ul class="list-plain">
+            {% for d in student.documents.all %}
+            <li><a href="{{ d.file.url }}">{{ d.title }}</a> · {{ d.get_document_type_display }}</li>
+            {% empty %}<li>No documents uploaded</li>{% endfor %}
+        </ul>
+    </div>
+</div>
+<a href="{% url 'student_list' %}" class="back-link">← Back to students</a>
+{% endblock %}

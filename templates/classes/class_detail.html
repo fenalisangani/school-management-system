@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ school_class.name }} — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / <a href="{% url 'class_list' %}">Classes</a> / {{ school_class.name }}</nav>
+<div class="page-header">
+    <div class="page-header-text">
+        <h1>{{ school_class.name }}</h1>
+        <p class="page-subtitle">{{ school_class.class_id }} · {{ school_class.academic_year }} · <span class="badge badge-{{ school_class.status }}">{{ school_class.get_status_display }}</span></p>
+    </div>
+    <div class="row-actions">
+        <a href="{% url 'school_class_edit' school_class.pk %}" class="btn btn-secondary">Edit</a>
+        <a href="{% url 'school_class_delete' school_class.pk %}" class="btn btn-danger">Delete</a>
+    </div>
+</div>
+
+<div class="detail-grid">
+    <div class="panel-card">
+        <h2>Sections</h2>
+        <ul class="list-plain">
+            {% for s in school_class.sections.all %}
+            <li>Section <strong>{{ s.name }}</strong></li>
+            {% empty %}<li>No sections defined</li>{% endfor %}
+        </ul>
+    </div>
+    <div class="panel-card">
+        <h2>Subjects</h2>
+        <ul class="list-plain">
+            {% for cs in school_class.class_subjects.all %}
+            <li>{{ cs.subject }} <span class="badge badge-inactive">{{ cs.subject.credit_hours }} cr</span></li>
+            {% empty %}<li>No subjects assigned</li>{% endfor %}
+        </ul>
+    </div>
+</div>
+<a href="{% url 'class_list' %}" class="back-link">← Back to classes</a>
+{% endblock %}

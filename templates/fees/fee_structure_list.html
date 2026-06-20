@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load inr_tags %}
+
+{% block title %}Fees — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / Fees</nav>
+<div class="page-header">
+    <div class="page-header-text">
+        <h1>Fee Structures</h1>
+        <p class="page-subtitle">All amounts in <strong>INR ({{ CURRENCY_SYMBOL }})</strong> — Indian Rupees</p>
+    </div>
+    <div class="actions">
+        <a href="{% url 'fee_structure_create' %}" class="btn btn-primary">+ New Structure</a>
+        <a href="{% url 'student_fee_list' %}" class="btn btn-secondary">Assignments</a>
+        <a href="{% url 'fee_report' %}" class="btn btn-secondary">Reports</a>
+    </div>
+</div>
+
+<div class="list-toolbar">
+    <form method="get" class="search-form" role="search">
+        <input type="search" name="q" value="{{ query }}" placeholder="Search by ID, class or category…" aria-label="Search fee structures">
+        <button type="submit" class="btn btn-secondary">Search</button>
+        {% if query %}<a href="{% url 'fee_structure_list' %}" class="btn btn-secondary">Clear</a>{% endif %}
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead><tr><th>ID</th><th>Class</th><th>Year</th><th>Category</th><th>Components</th><th>Total (INR)</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for fs in structures %}
+                <tr>
+                    <td><strong>{{ fs.structure_id }}</strong></td>
+                    <td>{{ fs.school_class }}</td>
+                    <td>{{ fs.academic_year }}</td>
+                    <td>{{ fs.category }}</td>
+                    <td>{% for i in fs.items.all %}{{ i.component.code }} ({{ i.amount|inr }}){% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                    <td><strong>{{ fs.total_amount|inr }}</strong></td>
+                    <td>
+                        <div class="row-actions">
+                            <a href="{% url 'fee_structure_edit' fs.pk %}" class="btn-mini">Edit</a>
+                            <a href="{% url 'fee_structure_delete' fs.pk %}" class="btn-mini danger">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="7">{% if query %}No structures match “{{ query }}”.{% else %}No structures. <a href="{% url 'fee_structure_create' %}">Create one</a>{% endif %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include 'partials/pagination.html' %}
+{% endblock %}

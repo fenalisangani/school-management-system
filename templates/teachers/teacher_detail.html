@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ teacher.full_name }} — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / <a href="{% url 'teacher_list' %}">Teachers</a> / {{ teacher.full_name }}</nav>
+<div class="page-header">
+    <div class="page-header-text">
+        <h1>{{ teacher.full_name }}</h1>
+        <p class="page-subtitle">{{ teacher.teacher_id }} · <span class="badge {% if teacher.employment_status == 'active' %}badge-active{% else %}badge-inactive{% endif %}">{{ teacher.get_employment_status_display }}</span></p>
+    </div>
+    <div class="row-actions">
+        <a href="{% url 'teacher_edit' teacher.pk %}" class="btn btn-secondary">Edit</a>
+        <a href="{% url 'teacher_delete' teacher.pk %}" class="btn btn-danger">Delete</a>
+    </div>
+</div>
+
+<div class="detail-grid">
+    <div class="panel-card">
+        <h2>Profile</h2>
+        <dl class="detail-list">
+            <dt>Qualification</dt><dd>{{ teacher.qualification|default:"—" }}</dd>
+            <dt>Experience</dt><dd>{{ teacher.years_experience }} years</dd>
+            <dt>Phone</dt><dd>{{ teacher.phone|default:"—" }}</dd>
+            <dt>Email</dt><dd>{{ teacher.email|default:"—" }}</dd>
+        </dl>
+    </div>
+    <div class="panel-card">
+        <h2>Assignments</h2>
+        <ul class="list-plain">
+            {% for a in teacher.assignments.all %}
+            <li>{{ a.get_role_display }} — {{ a.school_class }}{% if a.section %} Sec {{ a.section.name }}{% endif %}{% if a.subject %} ({{ a.subject }}){% endif %}</li>
+            {% empty %}<li>No assignments yet</li>{% endfor %}
+        </ul>
+    </div>
+</div>
+<a href="{% url 'teacher_list' %}" class="back-link">← Back to teachers</a>
+{% endblock %}

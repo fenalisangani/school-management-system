@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load inr_tags %}
+
+{% block title %}Student Fees — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / Fees / Assignments</nav>
+<div class="page-header">
+    <div class="page-header-text">
+        <h1>Student Fee Assignments</h1>
+        <p class="page-subtitle">Balances shown in <strong>INR ({{ CURRENCY_SYMBOL }})</strong></p>
+    </div>
+    <div class="actions">
+        <a href="{% url 'student_fee_assign' %}" class="btn btn-primary">Assign Fees</a>
+        <a href="{% url 'fee_payment_create' %}" class="btn btn-secondary">Record Payment</a>
+    </div>
+</div>
+
+<form method="get" class="filter-bar card" style="padding: 1rem 1.15rem; margin-bottom: 1rem; display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
+    <input type="search" name="q" value="{{ query }}" placeholder="Search student…" aria-label="Search students" style="flex:1; min-width:200px; padding:0.55rem 0.85rem; border:1px solid var(--border); border-radius:8px;">
+    <select name="status" onchange="this.form.submit()">
+        <option value="">All statuses</option>
+        {% for val, label in status_choices %}
+        <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-secondary">Search</button>
+</form>
+
+<div class="card">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Structure</th>
+                    <th>Due (INR)</th>
+                    <th>Paid (INR)</th>
+                    <th>Balance (INR)</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in assignments %}
+                <tr>
+                    <td><strong>{{ a.student }}</strong></td>
+                    <td>{{ a.fee_structure }}</td>
+                    <td>{{ a.total_due|inr }}</td>
+                    <td>{{ a.amount_paid|inr }}</td>
+                    <td>{{ a.balance|inr }}</td>
+                    <td><span class="badge badge-{{ a.status }}">{{ a.get_status_display }}</span></td>
+                    <td>
+                        <div class="row-actions">
+                            <a href="{% url 'student_fee_delete' a.pk %}" class="btn-mini danger">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="7">No assignments yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include 'partials/pagination.html' %}
+{% endblock %}

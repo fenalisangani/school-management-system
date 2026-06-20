@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Attendance Reports — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / Attendance / Reports</nav>
+<div class="page-header">
+    <div class="page-header-text">
+        <h1>Attendance Analytics</h1>
+        <p class="page-subtitle">Minimum required: <strong>{{ min_pct }}%</strong></p>
+    </div>
+    <div class="actions">
+        <a href="{% url 'attendance_report_export' %}" class="btn btn-primary">⬇ Export to Excel (CSV)</a>
+        <a href="{% url 'attendance_rule_create' %}" class="btn btn-secondary">Configure rules</a>
+    </div>
+</div>
+
+{% if defaulters %}
+<div class="alert-banner" style="margin-bottom:1.25rem">
+    <div class="alert-icon">⚠️</div>
+    <div>
+        <strong>{{ defaulters|length }} student(s) below minimum</strong>
+        <p>Review short attendance list below.</p>
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead><tr><th>Student</th><th>Attendance %</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for s in summaries %}
+                <tr class="{% if s.short %}row-warning{% endif %}">
+                    <td><strong>{{ s.name }}</strong></td>
+                    <td>{{ s.percentage }}%</td>
+                    <td>{% if s.short %}<span class="badge badge-pending">Below minimum</span>{% else %}<span class="badge badge-paid">On track</span>{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="3">No attendance data yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

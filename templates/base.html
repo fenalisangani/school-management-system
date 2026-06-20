@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="School Management System — Institution ERP for classes, students, teachers, fees in INR, and attendance.">
+    <title>{% block title %}School Management System{% endblock %}</title>
+    <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="app-body">
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon" aria-hidden="true" title="School Management System">
+                    {% include 'partials/logo.html' %}
+                </div>
+                <div>
+                    <span class="brand-name">School Management System</span>
+                    <span class="brand-tag">Academic ERP</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="Main navigation">
+                <span class="nav-group-label">Main</span>
+                <a href="{% url 'dashboard' %}" class="nav-item {% if request.path == '/' %}active{% endif %}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                    Dashboard
+                </a>
+
+                <span class="nav-group-label">Modules</span>
+                <a href="{% url 'class_list' %}" class="nav-item {% if '/classes/' in request.path %}active{% endif %}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                    Classes
+                </a>
+                <a href="{% url 'student_list' %}" class="nav-item {% if '/students/' in request.path %}active{% endif %}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                    Students
+                </a>
+                <a href="{% url 'teacher_list' %}" class="nav-item {% if '/teachers/' in request.path %}active{% endif %}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Teachers
+                </a>
+                <a href="{% url 'fee_structure_list' %}" class="nav-item {% if '/fees/' in request.path %}active{% endif %}">
+                    {% include 'partials/icon_inr.html' %}
+                    Fees (INR)
+                </a>
+                <a href="{% url 'student_attendance_list' %}" class="nav-item {% if '/attendance/' in request.path %}active{% endif %}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                    Attendance
+                </a>
+
+                <span class="nav-group-label">System</span>
+                <a href="/admin/" class="nav-item" target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    Admin Panel
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-tip">
+                    <strong>Reliable records</strong>
+                    <p>All fee amounts in {{ CURRENCY_SYMBOL }} INR. Data stored locally on your server.</p>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-area">
+            {% include 'partials/site_header.html' %}
+
+            <main class="main-content" id="mainContent">
+                {% if messages %}
+                <div class="toast-stack" id="toastStack">
+                    {% for message in messages %}
+                    <div class="toast toast-{{ message.tags|default:'info' }}" role="alert">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% block content %}{% endblock %}
+            </main>
+
+            {% include 'partials/site_footer.html' %}
+        </div>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <script src="{% static 'js/forms.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

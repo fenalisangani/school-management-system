@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Attendance — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / Attendance</nav>
+<div class="page-header">
+    <div class="page-header-text">
+        <h1>Student Attendance</h1>
+        <p class="page-subtitle">Daily records and participation tracking</p>
+    </div>
+    <div class="actions">
+        <a href="{% url 'bulk_student_attendance' %}" class="btn btn-primary">Bulk Mark</a>
+        <a href="{% url 'student_attendance_create' %}" class="btn btn-secondary">Single</a>
+        <a href="{% url 'attendance_report' %}" class="btn btn-secondary">Reports</a>
+    </div>
+</div>
+
+<div class="list-toolbar">
+    <form method="get" class="search-form" role="search">
+        <input type="search" name="q" value="{{ query }}" placeholder="Search by student name…" aria-label="Search attendance">
+        <button type="submit" class="btn btn-secondary">Search</button>
+        {% if query %}<a href="{% url 'student_attendance_list' %}" class="btn btn-secondary">Clear</a>{% endif %}
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead><tr><th>Student</th><th>Class</th><th>Section</th><th>Date</th><th>Status</th><th>Subject</th></tr></thead>
+            <tbody>
+                {% for r in records %}
+                <tr>
+                    <td><strong>{{ r.student }}</strong></td>
+                    <td>{{ r.school_class }}</td>
+                    <td>{{ r.section }}</td>
+                    <td>{{ r.date }}</td>
+                    <td><span class="badge badge-{% if r.status == 'present' %}paid{% elif r.status == 'absent' %}pending{% else %}partial{% endif %}">{{ r.get_status_display }}</span></td>
+                    <td>{{ r.subject|default:"Daily" }}</td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="6">{% if query %}No records match “{{ query }}”.{% else %}No records. <a href="{% url 'bulk_student_attendance' %}">Mark attendance</a>{% endif %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include 'partials/pagination.html' %}
+{% endblock %}

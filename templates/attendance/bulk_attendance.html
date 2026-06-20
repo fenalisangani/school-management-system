@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Bulk Attendance — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / <a href="{% url 'student_attendance_list' %}">Attendance</a> / Bulk</nav>
+<div class="page-header">
+    <div class="page-header-text">
+        <h1>Bulk Attendance</h1>
+        <p class="page-subtitle">Mark an entire class section in one go</p>
+    </div>
+</div>
+
+<div class="form-page">
+    <form method="post" class="form-card" id="bulk-form">
+        {% csrf_token %}
+        {% for field in bulk_form %}
+        <div class="form-field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+        </div>
+        {% endfor %}
+        <div class="form-actions" style="border-top:none;padding-top:0">
+            <button type="submit" name="load_students" class="btn btn-primary">Load students</button>
+        </div>
+    </form>
+</div>
+
+{% if students %}
+<div class="card" style="margin-top:1.25rem">
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="school_class" value="{{ selected_class.pk }}">
+        <input type="hidden" name="section" value="{{ selected_section.pk }}">
+        <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
+        <input type="hidden" name="default_status" value="present">
+        <div class="table-scroll">
+            <table class="data-table">
+                <thead><tr><th>Student</th><th>Status</th></tr></thead>
+                <tbody>
+                    {% for student, default in students %}
+                    <tr>
+                        <td><strong>{{ student.full_name }}</strong> <span style="color:var(--text-muted);font-size:0.85rem">{{ student.student_id }}</span></td>
+                        <td>
+                            <select name="status_{{ student.pk }}" class="status-select">
+                                <option value="present" {% if default == 'present' %}selected{% endif %}>Present</option>
+                                <option value="absent">Absent</option>
+                                <option value="leave">Leave</option>
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div style="padding:1rem 1.15rem">
+            <button type="submit" name="save_attendance" class="btn btn-primary">Save attendance for {{ students|length }} students</button>
+        </div>
+    </form>
+</div>
+{% endif %}
+{% endblock %}

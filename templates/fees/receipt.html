@@ -1,0 +1,116 @@
+{% load static %}
+{% load inr_tags %}
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt {{ payment.receipt_number }} — School Management System</title>
+    <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
+    <style>
+        :root { --brown: #4f46e5; --brown-dark: #1e1b4b; --cream: #f4f6fb; }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--cream);
+            color: #1e2238;
+            padding: 2rem 1rem;
+        }
+        .receipt {
+            max-width: 640px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 12px 40px rgba(42, 30, 22, 0.12);
+            overflow: hidden;
+        }
+        .receipt-head {
+            background: linear-gradient(135deg, var(--brown-dark), #4338ca);
+            color: #fbf6f0;
+            padding: 1.75rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .receipt-head h1 { margin: 0; font-size: 1.3rem; letter-spacing: -0.02em; }
+        .receipt-head p { margin: 0.25rem 0 0; color: #c7d2fe; font-size: 0.85rem; }
+        .receipt-no { text-align: right; font-size: 0.85rem; color: #c7d2fe; }
+        .receipt-no strong { display: block; color: #fff; font-size: 1.05rem; }
+        .receipt-body { padding: 2rem; }
+        .receipt-row { display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px dashed #e3e8f2; font-size: 0.92rem; }
+        .receipt-row span:first-child { color: #6b7280; }
+        .receipt-row span:last-child { font-weight: 600; }
+        .receipt-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background: #e0e7ff;
+            border-radius: 10px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--brown-dark);
+        }
+        .receipt-foot { padding: 1.5rem 2rem; text-align: center; color: #6b7280; font-size: 0.8rem; border-top: 1px solid #eef1f8; }
+        .actions { max-width: 640px; margin: 1.25rem auto 0; display: flex; gap: 0.6rem; justify-content: center; }
+        .btn {
+            padding: 0.6rem 1.2rem; border-radius: 10px; border: none; cursor: pointer;
+            font-size: 0.9rem; font-weight: 600; text-decoration: none; font-family: inherit;
+        }
+        .btn-print { background: var(--brown); color: #fff; }
+        .btn-back { background: #fff; color: #1e2238; border: 1px solid #e3e8f2; }
+        .paid-stamp {
+            display: inline-block; margin-top: 0.75rem; padding: 0.3rem 0.9rem; border-radius: 999px;
+            background: #dcfce7; color: #15803d; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.05em;
+        }
+        @media print {
+            body { background: #fff; padding: 0; }
+            .actions { display: none; }
+            .receipt { box-shadow: none; border: 1px solid #e3e8f2; }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt">
+        <div class="receipt-head">
+            <div>
+                <h1>School Management System</h1>
+                <p>Official Fee Payment Receipt</p>
+            </div>
+            <div class="receipt-no">
+                Receipt No.
+                <strong>{{ payment.receipt_number }}</strong>
+                {{ payment.paid_at|date:"d M Y, h:i A" }}
+            </div>
+        </div>
+        <div class="receipt-body">
+            <div class="receipt-row"><span>Student</span><span>{{ payment.assignment.student.full_name }}</span></div>
+            <div class="receipt-row"><span>Student ID</span><span>{{ payment.assignment.student.student_id }}</span></div>
+            <div class="receipt-row"><span>Class</span><span>{{ payment.assignment.fee_structure.school_class }}</span></div>
+            <div class="receipt-row"><span>Fee Structure</span><span>{{ payment.assignment.fee_structure.structure_id }} · {{ payment.assignment.fee_structure.category }}</span></div>
+            <div class="receipt-row"><span>Payment Mode</span><span>{{ payment.get_payment_mode_display }}</span></div>
+            <div class="receipt-row"><span>Installment</span><span>#{{ payment.installment_number }}</span></div>
+            {% if payment.late_fee %}<div class="receipt-row"><span>Late Fee</span><span>{{ payment.late_fee|inr }}</span></div>{% endif %}
+            <div class="receipt-row"><span>Total Due</span><span>{{ payment.assignment.total_due|inr }}</span></div>
+            <div class="receipt-row"><span>Balance After Payment</span><span>{{ payment.assignment.balance|inr }}</span></div>
+
+            <div class="receipt-total">
+                <span>Amount Paid</span>
+                <span>{{ payment.amount|inr }}</span>
+            </div>
+            <div style="text-align:center">
+                <span class="paid-stamp">{{ payment.assignment.get_status_display|upper }}</span>
+            </div>
+        </div>
+        <div class="receipt-foot">
+            This is a system-generated receipt. {% if payment.notes %}Note: {{ payment.notes }}{% endif %}
+        </div>
+    </div>
+
+    <div class="actions">
+        <button type="button" class="btn btn-print" onclick="window.print()">🖨 Print / Save as PDF</button>
+        <a href="{% url 'fee_report' %}" class="btn btn-back">Back to reports</a>
+    </div>
+</body>
+</html>

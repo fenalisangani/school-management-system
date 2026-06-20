@@ -1,0 +1,69 @@
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+        <div class="footer-brand-col">
+            <div class="footer-brand">
+                <span class="footer-logo">₹</span>
+                <div>
+                    <strong class="footer-name">School Management System</strong>
+                    <span class="footer-tagline">Institution ERP for Indian schools & colleges</span>
+                </div>
+            </div>
+            <p class="footer-about">
+                Reliable management for classes, students, teachers, fees in <strong>{{ CURRENCY_SYMBOL }} {{ CURRENCY_CODE }}</strong>, and daily attendance — built for accuracy and audit-ready records.
+            </p>
+            <div class="footer-trust">
+                <span class="footer-trust-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Secure data
+                </span>
+                <span class="footer-trust-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    IST timezone
+                </span>
+            </div>
+        </div>
+
+        <div class="footer-links-col">
+            <h3 class="footer-heading">Modules</h3>
+            <ul class="footer-links">
+                <li><a href="{% url 'class_list' %}">Classes & subjects</a></li>
+                <li><a href="{% url 'student_list' %}">Student registration</a></li>
+                <li><a href="{% url 'teacher_list' %}">Teachers</a></li>
+                <li><a href="{% url 'fee_structure_list' %}">Fees (INR)</a></li>
+                <li><a href="{% url 'student_attendance_list' %}">Attendance</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-links-col">
+            <h3 class="footer-heading">Quick actions</h3>
+            <ul class="footer-links">
+                <li><a href="{% url 'school_class_create' %}">Add class</a></li>
+                <li><a href="{% url 'student_create' %}">Register student</a></li>
+                <li><a href="{% url 'fee_payment_create' %}">Record payment</a></li>
+                <li><a href="{% url 'fee_report' %}">Fee reports</a></li>
+                <li><a href="/admin/" target="_blank" rel="noopener">Admin panel</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-links-col">
+            <h3 class="footer-heading">Support</h3>
+            <ul class="footer-links">
+                <li><a href="{% url 'dashboard' %}">Help & workflow</a></li>
+                <li><a href="{% url 'attendance_report' %}">Attendance analytics</a></li>
+                <li><span class="footer-muted">Version {{ app_version }}</span></li>
+                <li><span class="footer-muted">Fees: {{ CURRENCY_SYMBOL }} only</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p class="footer-copy">
+            © {{ current_year }} School Management System. All rights reserved.
+        </p>
+        <p class="footer-legal">
+            <span>Academic year data stays on your server.</span>
+            <span class="footer-sep">·</span>
+            <span>Payments recorded in Indian Rupees (INR)</span>
+        </p>
+    </div>
+</footer>

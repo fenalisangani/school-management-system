@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Classes — School Management System{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / Classes</nav>
+<div class="page-header">
+    <div class="page-header-text">
+        <h1>Class Management</h1>
+        <p class="page-subtitle">Academic structure, sections & subject allocation</p>
+    </div>
+    <div class="actions">
+        <a href="{% url 'school_class_create' %}" class="btn btn-primary">+ Add Class</a>
+        <a href="{% url 'section_create' %}" class="btn btn-secondary">Section</a>
+        <a href="{% url 'academic_year_list' %}" class="btn btn-secondary">Years</a>
+        <a href="{% url 'subject_list' %}" class="btn btn-secondary">Subjects</a>
+    </div>
+</div>
+
+<div class="list-toolbar">
+    <form method="get" class="search-form" role="search">
+        <input type="search" name="q" value="{{ query }}" placeholder="Search by class name or ID…" aria-label="Search classes">
+        <button type="submit" class="btn btn-secondary">Search</button>
+        {% if query %}<a href="{% url 'class_list' %}" class="btn btn-secondary">Clear</a>{% endif %}
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Class ID</th>
+                    <th>Name</th>
+                    <th>Academic Year</th>
+                    <th>Sections</th>
+                    <th>Subjects</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in classes %}
+                <tr>
+                    <td><strong>{{ c.class_id }}</strong></td>
+                    <td>{{ c.name }}</td>
+                    <td>{{ c.academic_year }}</td>
+                    <td>{% for s in c.sections.all %}<span class="badge badge-inactive">{{ s.name }}</span> {% empty %}—{% endfor %}</td>
+                    <td>{% for cs in c.class_subjects.all %}{{ cs.subject.code }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</td>
+                    <td><span class="badge badge-{{ c.status }}">{{ c.get_status_display }}</span></td>
+                    <td>
+                        <div class="row-actions">
+                            <a href="{% url 'school_class_detail' c.pk %}" class="btn-mini">View</a>
+                            <a href="{% url 'school_class_edit' c.pk %}" class="btn-mini">Edit</a>
+                            <a href="{% url 'school_class_delete' c.pk %}" class="btn-mini danger">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="7">{% if query %}No classes match “{{ query }}”.{% else %}No classes yet. <a href="{% url 'school_class_create' %}">Create your first class</a>{% endif %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include 'partials/pagination.html' %}
+{% endblock %}
