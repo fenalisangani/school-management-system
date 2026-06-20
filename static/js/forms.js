@@ -30,13 +30,19 @@
         function loadSections() {
             var classId = classSelect.value;
             if (!classId) {
-                setOptions(sectionSelect, [], 'Select class first');
+                setOptions(sectionSelect, [], 'Select a class first');
                 sectionSelect.disabled = true;
                 return;
             }
             sectionSelect.disabled = true;
+            setOptions(sectionSelect, [], 'Loading sections…');
             fetchJson('/classes/api/' + classId + '/sections/')
                 .then(function (sections) {
+                    if (!sections.length) {
+                        setOptions(sectionSelect, [], 'No sections — add one first');
+                        sectionSelect.disabled = true;
+                        return;
+                    }
                     setOptions(
                         sectionSelect,
                         sections.map(function (s) { return { id: s.id, name: 'Section ' + s.name }; }),
@@ -51,8 +57,12 @@
         }
 
         classSelect.addEventListener('change', loadSections);
+        // Initialise the placeholder so it's clear the section depends on the class.
         if (classSelect.value) loadSections();
-        else sectionSelect.disabled = true;
+        else {
+            setOptions(sectionSelect, [], 'Select a class first');
+            sectionSelect.disabled = true;
+        }
     }
 
     function bindClassAcademicYear(classSelect, yearSelect) {
