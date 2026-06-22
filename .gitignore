@@ -18,11 +18,16 @@ staticfiles/
 .env
 .env.*
 
-# IDE
+# IDE / editor tooling
 .vscode/
 .idea/
+.cursor/
 *.swp
 *~
+
+# Local helper scripts / logs
+_*.py
+*.log
 
 # OS
 .DS_Store
