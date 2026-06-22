@@ -21,7 +21,6 @@ staticfiles/
 # IDE / editor tooling
 .vscode/
 .idea/
-.cursor/
 *.swp
 *~
 
