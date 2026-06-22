@@ -14,6 +14,13 @@ class SectionInline(admin.TabularInline):
     extra = 1
 
 
+@admin.register(Section)
+class SectionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'school_class')
+    list_filter = ('school_class',)
+    search_fields = ('name', 'school_class__name')
+
+
 class ClassSubjectInline(admin.TabularInline):
     model = ClassSubject
     extra = 1
