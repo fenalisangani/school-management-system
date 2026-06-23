@@ -48,11 +48,10 @@ Write-Host " SHARE THIS LINK WITH YOUR MANAGER:"
 Write-Host " $TunnelUrl"
 Write-Host "========================================"
 Write-Host ""
-Write-Host "Login: admin / Admin@12345"
-Write-Host ""
-Write-Host "Starting Django with TUNNEL_URL for CSRF..."
+Write-Host "Opens dashboard directly — no login required (demo mode)."
 Write-Host "Press Ctrl+C to stop."
 
 $env:TUNNEL_URL = $TunnelUrl
 $env:SHOW_DEMO_LOGIN_HINT = "True"
+$env:LOGIN_REQUIRED = "False"
 py manage.py runserver $Port

@@ -4,7 +4,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.contrib.auth.views import LoginView
 from django.db.models import Count
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_not_required
@@ -91,6 +91,8 @@ class ToggleLoginView(LoginView):
     redirect_authenticated_user = True
 
     def dispatch(self, request, *args, **kwargs):
+        if not settings.LOGIN_REQUIRED:
+            return redirect('dashboard')
         if not settings.LOGIN_PAGE_VISIBLE:
             return render(request, 'registration/login_hidden.html', status=503)
         return super().dispatch(request, *args, **kwargs)

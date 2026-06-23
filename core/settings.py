@@ -21,6 +21,9 @@ SECRET_KEY = os.environ.get(
 # DEBUG defaults to True for local development. Set DEBUG=False on your host.
 DEBUG = env_bool('DEBUG', True)
 
+# Set LOGIN_REQUIRED=False to skip sign-in and open the dashboard directly (demo only).
+LOGIN_REQUIRED = env_bool('LOGIN_REQUIRED', True)
+
 # Hosts allowed to serve the site. '*' is convenient for local/LAN demos.
 # On a real host, set ALLOWED_HOSTS=yourdomain.com (comma separated).
 ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', '*')
@@ -102,7 +105,12 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'core.middleware.TunnelCsrfMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.LoginRequiredMiddleware',
+]
+if LOGIN_REQUIRED:
+    MIDDLEWARE.append('django.contrib.auth.middleware.LoginRequiredMiddleware')
+else:
+    MIDDLEWARE.append('core.middleware.DemoAutoLoginMiddleware')
+MIDDLEWARE += [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
