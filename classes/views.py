@@ -19,6 +19,9 @@ def class_list(request):
     classes = SchoolClass.objects.select_related('academic_year').prefetch_related(
         'sections', 'class_subjects__subject',
     )
+    inst_filter = request.GET.get('type', '').strip()
+    if inst_filter in ('school', 'college'):
+        classes = classes.filter(institution_type=inst_filter)
     query = request.GET.get('q', '').strip()
     if query:
         classes = classes.filter(
@@ -29,6 +32,7 @@ def class_list(request):
         'classes': page_obj,
         'page_obj': page_obj,
         'query': query,
+        'inst_filter': inst_filter,
     })
 
 
@@ -67,7 +71,7 @@ def school_class_create(request):
         form.save()
         messages.success(request, 'Class created.')
         return redirect('class_list')
-    return render_model_form(request, form, 'Add Class', reverse('class_list'))
+    return render_model_form(request, form, 'Add Class / Course', reverse('class_list'))
 
 
 def school_class_edit(request, pk):

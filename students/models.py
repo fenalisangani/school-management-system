@@ -1,6 +1,6 @@
 from django.db import models
 
-from classes.models import AcademicYear, SchoolClass, Section
+from classes.models import AcademicYear, InstitutionType, SchoolClass, Section
 
 
 class Gender(models.TextChoices):
@@ -18,6 +18,12 @@ class StudentStatus(models.TextChoices):
 
 class Student(models.Model):
     student_id = models.CharField(max_length=20, unique=True)
+    institution_type = models.CharField(
+        max_length=10,
+        choices=InstitutionType.choices,
+        default=InstitutionType.SCHOOL,
+        help_text='School student or college student.',
+    )
     full_name = models.CharField(max_length=150)
     date_of_birth = models.DateField()
     gender = models.CharField(max_length=10, choices=Gender.choices)
@@ -85,10 +91,18 @@ class StudentEnrollment(models.Model):
     )
     admission_date = models.DateField()
     is_current = models.BooleanField(default=True)
+    semester = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        help_text='College only — semester number (1–8). Leave blank for school.',
+    )
     promotion_notes = models.TextField(blank=True)
 
     class Meta:
         ordering = ['-admission_date']
 
     def __str__(self):
-        return f'{self.student} → {self.school_class} Sec {self.section.name}'
+        base = f'{self.student} → {self.school_class} Sec {self.section.name}'
+        if self.semester:
+            return f'{base} (Sem {self.semester})'
+        return base

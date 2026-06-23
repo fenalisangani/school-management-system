@@ -12,7 +12,7 @@
 </div>
 
 <div class="form-page">
-    <form method="post" class="form-card" id="bulk-form">
+    <form method="post" class="form-card" id="bulk-form" data-cascade-form>
         {% csrf_token %}
         {% for field in bulk_form %}
         <div class="form-field">
@@ -30,8 +30,10 @@
 <div class="card" style="margin-top:1.25rem">
     <form method="post">
         {% csrf_token %}
+        <input type="hidden" name="institution_type" value="{{ bulk_form.institution_type.value|default:'school' }}">
         <input type="hidden" name="school_class" value="{{ selected_class.pk }}">
         <input type="hidden" name="section" value="{{ selected_section.pk }}">
+        {% if selected_semester %}<input type="hidden" name="semester" value="{{ selected_semester }}">{% endif %}
         <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
         <input type="hidden" name="default_status" value="present">
         <div class="table-scroll">

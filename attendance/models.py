@@ -42,6 +42,11 @@ class StudentAttendance(models.Model):
         help_text='Leave blank for daily class attendance.',
     )
     date = models.DateField()
+    semester = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        help_text='College attendance — semester number. Blank for school.',
+    )
     status = models.CharField(max_length=10, choices=AttendanceStatus.choices)
     marked_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,

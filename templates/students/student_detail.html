@@ -45,7 +45,7 @@
         <h2>Enrollment</h2>
         <ul class="list-plain">
             {% for e in student.enrollments.all %}
-            <li>{{ e.academic_year }} — {{ e.school_class }} Sec {{ e.section.name }}{% if e.is_current %} <span class="badge badge-paid">Current</span>{% endif %}</li>
+            <li>{{ e.academic_year }} — {{ e.school_class }} · Div {{ e.section.name }}{% if e.semester %} · Sem {{ e.semester }}{% endif %}{% if e.is_current %} <span class="badge badge-paid">Current</span>{% endif %}</li>
             {% empty %}<li>Not enrolled</li>{% endfor %}
         </ul>
     </div>

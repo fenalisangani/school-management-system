@@ -53,6 +53,7 @@ def bulk_student_attendance(request):
     bulk_form = BulkStudentAttendanceForm(request.POST or None)
     students = []
     school_class = section = date = None
+    selected_semester = None
 
     if request.method == 'POST':
         if 'save_attendance' in request.POST:
@@ -60,6 +61,7 @@ def bulk_student_attendance(request):
             if bulk_form.is_valid():
                 school_class = bulk_form.cleaned_data['school_class']
                 section = bulk_form.cleaned_data['section']
+                semester = bulk_form.cleaned_data.get('semester')
                 date = bulk_form.cleaned_data['date']
                 count = 0
                 for key, value in request.POST.items():
@@ -71,6 +73,7 @@ def bulk_student_attendance(request):
                             section=section,
                             subject=None,
                             date=date,
+                            semester=semester,
                             defaults={
                                 'status': value,
                                 'marked_by': request.user if request.user.is_authenticated else None,
@@ -82,22 +85,34 @@ def bulk_student_attendance(request):
         elif bulk_form.is_valid() and 'load_students' in request.POST:
             school_class = bulk_form.cleaned_data['school_class']
             section = bulk_form.cleaned_data['section']
+            semester = bulk_form.cleaned_data.get('semester')
             date = bulk_form.cleaned_data['date']
+            selected_semester = semester
             default_status = bulk_form.cleaned_data['default_status']
             enrollments = StudentEnrollment.objects.filter(
                 school_class=school_class,
                 section=section,
                 is_current=True,
-            ).select_related('student')
+            )
+            if semester:
+                enrollments = enrollments.filter(semester=semester)
+            else:
+                enrollments = enrollments.filter(semester__isnull=True)
+            enrollments = enrollments.select_related('student')
             students = [(e.student, default_status) for e in enrollments]
             if not students:
-                messages.warning(request, 'No active enrollments for this class and section.')
+                messages.warning(
+                    request,
+                    'No active enrollments for this class/section'
+                    + (f' and semester {semester}.' if semester else '.'),
+                )
 
     return render(request, 'attendance/bulk_attendance.html', {
         'bulk_form': bulk_form,
         'students': students,
         'selected_class': school_class,
         'selected_section': section,
+        'selected_semester': selected_semester,
         'selected_date': date,
     })
 

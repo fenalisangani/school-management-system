@@ -27,19 +27,20 @@
 <div class="card">
     <div class="table-scroll">
         <table class="data-table">
-            <thead><tr><th>Student</th><th>Class</th><th>Section</th><th>Date</th><th>Status</th><th>Subject</th></tr></thead>
+            <thead><tr><th>Student</th><th>Class / Course</th><th>Division</th><th>Semester</th><th>Date</th><th>Status</th><th>Subject</th></tr></thead>
             <tbody>
                 {% for r in records %}
                 <tr>
                     <td><strong>{{ r.student }}</strong></td>
                     <td>{{ r.school_class }}</td>
                     <td>{{ r.section }}</td>
+                    <td>{% if r.semester %}Sem {{ r.semester }}{% else %}—{% endif %}</td>
                     <td>{{ r.date }}</td>
                     <td><span class="badge badge-{% if r.status == 'present' %}paid{% elif r.status == 'absent' %}pending{% else %}partial{% endif %}">{{ r.get_status_display }}</span></td>
                     <td>{{ r.subject|default:"Daily" }}</td>
                 </tr>
                 {% empty %}
-                <tr class="empty-row"><td colspan="6">{% if query %}No records match “{{ query }}”.{% else %}No records. <a href="{% url 'bulk_student_attendance' %}">Mark attendance</a>{% endif %}</td></tr>
+                <tr class="empty-row"><td colspan="7">{% if query %}No records match “{{ query }}”.{% else %}No records. <a href="{% url 'bulk_student_attendance' %}">Mark attendance</a>{% endif %}</td></tr>
                 {% endfor %}
             </tbody>
         </table>

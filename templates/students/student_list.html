@@ -28,16 +28,17 @@
     <div class="table-scroll">
         <table class="data-table">
             <thead>
-                <tr><th>ID</th><th>Name</th><th>Status</th><th>Current Class</th><th>Actions</th></tr>
+                <tr><th>ID</th><th>Name</th><th>Type</th><th>Status</th><th>Current enrollment</th><th>Actions</th></tr>
             </thead>
             <tbody>
                 {% for s in students %}
                 <tr>
                     <td><strong>{{ s.student_id }}</strong></td>
                     <td>{{ s.full_name }}</td>
+                    <td><span class="badge {% if s.institution_type == 'college' %}badge-partial{% else %}badge-active{% endif %}">{{ s.get_institution_type_display }}</span></td>
                     <td><span class="badge badge-{{ s.status }}">{{ s.get_status_display }}</span></td>
                     <td>
-                        {% for e in s.enrollments.all %}{% if e.is_current %}{{ e.school_class }} · Sec {{ e.section.name }}{% endif %}{% empty %}<span class="text-muted">Not enrolled</span>{% endfor %}
+                        {% for e in s.enrollments.all %}{% if e.is_current %}{{ e.school_class }} · Div {{ e.section.name }}{% if e.semester %} · Sem {{ e.semester }}{% endif %}{% endif %}{% empty %}<span class="text-muted">Not enrolled</span>{% endfor %}
                     </td>
                     <td>
                         <div class="row-actions">
@@ -48,7 +49,7 @@
                     </td>
                 </tr>
                 {% empty %}
-                <tr class="empty-row"><td colspan="5">{% if query %}No students match “{{ query }}”.{% else %}No students. <a href="{% url 'student_create' %}">Register one</a>{% endif %}</td></tr>
+                <tr class="empty-row"><td colspan="6">{% if query %}No students match “{{ query }}”.{% else %}No students. <a href="{% url 'student_create' %}">Register one</a>{% endif %}</td></tr>
                 {% endfor %}
             </tbody>
         </table>

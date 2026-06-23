@@ -6,11 +6,11 @@
 <nav class="breadcrumb"><a href="{% url 'dashboard' %}">Dashboard</a> / Classes</nav>
 <div class="page-header">
     <div class="page-header-text">
-        <h1>Class Management</h1>
-        <p class="page-subtitle">Academic structure, sections & subject allocation</p>
+        <h1>Class & Course Management</h1>
+        <p class="page-subtitle">School standards with sections · College courses with semester system</p>
     </div>
     <div class="actions">
-        <a href="{% url 'school_class_create' %}" class="btn btn-primary">+ Add Class</a>
+        <a href="{% url 'school_class_create' %}" class="btn btn-primary">+ Add Class / Course</a>
         <a href="{% url 'section_create' %}" class="btn btn-secondary">Section</a>
         <a href="{% url 'academic_year_list' %}" class="btn btn-secondary">Years</a>
         <a href="{% url 'subject_list' %}" class="btn btn-secondary">Subjects</a>
@@ -18,7 +18,13 @@
 </div>
 
 <div class="list-toolbar">
+    <div class="filter-tabs">
+        <a href="{% url 'class_list' %}" class="{% if not inst_filter %}active{% endif %}">All</a>
+        <a href="{% url 'class_list' %}?type=school" class="{% if inst_filter == 'school' %}active{% endif %}">School</a>
+        <a href="{% url 'class_list' %}?type=college" class="{% if inst_filter == 'college' %}active{% endif %}">College</a>
+    </div>
     <form method="get" class="search-form" role="search">
+        {% if inst_filter %}<input type="hidden" name="type" value="{{ inst_filter }}">{% endif %}
         <input type="search" name="q" value="{{ query }}" placeholder="Search by class name or ID…" aria-label="Search classes">
         <button type="submit" class="btn btn-secondary">Search</button>
         {% if query %}<a href="{% url 'class_list' %}" class="btn btn-secondary">Clear</a>{% endif %}
@@ -30,10 +36,12 @@
         <table class="data-table">
             <thead>
                 <tr>
+                    <th>Type</th>
                     <th>Class ID</th>
                     <th>Name</th>
+                    <th>Program</th>
                     <th>Academic Year</th>
-                    <th>Sections</th>
+                    <th>Divisions</th>
                     <th>Subjects</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -42,8 +50,10 @@
             <tbody>
                 {% for c in classes %}
                 <tr>
+                    <td><span class="badge {% if c.institution_type == 'college' %}badge-partial{% else %}badge-active{% endif %}">{{ c.get_institution_type_display }}</span></td>
                     <td><strong>{{ c.class_id }}</strong></td>
                     <td>{{ c.name }}</td>
+                    <td>{% if c.institution_type == 'college' %}{{ c.get_program_type_display }}{% else %}Sections only{% endif %}</td>
                     <td>{{ c.academic_year }}</td>
                     <td>{% for s in c.sections.all %}<span class="badge badge-inactive">{{ s.name }}</span> {% empty %}—{% endfor %}</td>
                     <td>{% for cs in c.class_subjects.all %}{{ cs.subject.code }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</td>
@@ -57,7 +67,7 @@
                     </td>
                 </tr>
                 {% empty %}
-                <tr class="empty-row"><td colspan="7">{% if query %}No classes match “{{ query }}”.{% else %}No classes yet. <a href="{% url 'school_class_create' %}">Create your first class</a>{% endif %}</td></tr>
+                <tr class="empty-row"><td colspan="9">{% if query %}No classes match “{{ query }}”.{% else %}No classes yet. <a href="{% url 'school_class_create' %}">Create your first class/course</a>{% endif %}</td></tr>
                 {% endfor %}
             </tbody>
         </table>

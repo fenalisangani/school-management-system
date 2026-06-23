@@ -28,8 +28,8 @@ class ClassSubjectInline(admin.TabularInline):
 
 @admin.register(SchoolClass)
 class SchoolClassAdmin(admin.ModelAdmin):
-    list_display = ('class_id', 'name', 'academic_year', 'status')
-    list_filter = ('status', 'academic_year')
+    list_display = ('class_id', 'name', 'institution_type', 'program_type', 'academic_year', 'status')
+    list_filter = ('institution_type', 'program_type', 'status', 'academic_year')
     search_fields = ('class_id', 'name')
     inlines = [SectionInline, ClassSubjectInline]
 

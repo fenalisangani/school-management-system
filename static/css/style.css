@@ -1438,6 +1438,27 @@ a:hover { color: var(--accent-2); }
     flex-wrap: wrap;
     margin-bottom: 1rem;
 }
+.filter-tabs {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+.filter-tabs a {
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-app);
+    border: 1px solid var(--border-light);
+    text-decoration: none;
+}
+.filter-tabs a.active,
+.filter-tabs a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(79, 70, 229, 0.08);
+}
 .search-form { display: flex; gap: 0.5rem; flex: 1; min-width: 220px; }
 .search-form input {
     flex: 1;

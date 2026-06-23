@@ -84,11 +84,21 @@ def enrollment_create(request):
                 student=form.cleaned_data['student'],
                 is_current=True,
             ).update(is_current=False)
-        form.save()
-        messages.success(request, 'Student enrolled in class.')
+        enrollment = form.save()
+        student = enrollment.student
+        inst = form.cleaned_data['institution_type']
+        if student.institution_type != inst:
+            student.institution_type = inst
+            student.save(update_fields=['institution_type'])
+        messages.success(request, 'Student enrolled successfully.')
         return redirect('student_list')
     return render_model_form(
-        request, form, 'Enroll Student in Class', reverse('student_list'), cascade_form=True,
+        request,
+        form,
+        'Enroll Student',
+        reverse('student_list'),
+        cascade_form=True,
+        subtitle='School: class + division · College: course + division + semester',
     )
 
 
