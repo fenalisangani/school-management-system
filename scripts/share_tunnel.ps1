@@ -1,6 +1,6 @@
 # Start Cloudflare quick tunnel for local demo sharing.
 # Usage: .\scripts\share_tunnel.ps1
-# Keeps Django on port 8765 and prints a public https link for sharing.
+# Keeps Django on port 8000 and prints a public https link for sharing.
 
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
@@ -14,7 +14,7 @@ if (-not (Test-Path $Cloudflared)) {
         -OutFile $Cloudflared
 }
 
-$Port = 8765
+$Port = 8000
 $LogFile = Join-Path $env:TEMP "cloudflared-sms.log"
 
 # Stop any previous tunnel log watcher target

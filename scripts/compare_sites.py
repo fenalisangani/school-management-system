@@ -39,6 +39,6 @@ def check(name, base):
 
 
 if __name__ == "__main__":
-    check("local", "http://127.0.0.1:8765")
+    check("local", "http://127.0.0.1:8000")
     check("tunnel", "https://call-pike-mechanical-reasoning.trycloudflare.com")
     check("render", "https://school-management-system-0xaa.onrender.com")

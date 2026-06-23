@@ -84,6 +84,12 @@ if DEBUG and _tunnel_file.exists():
 # Quick tunnels terminate TLS; trust forwarded proto during local demos.
 if DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # System env may carry production ALLOWED_HOSTS — always permit local dev.
+    for _local in ('127.0.0.1', 'localhost', '[::1]'):
+        _add_allowed_host(_local)
+    for _port in (8000, 8765):
+        _add_csrf_origin(f'http://127.0.0.1:{_port}')
+        _add_csrf_origin(f'http://localhost:{_port}')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
