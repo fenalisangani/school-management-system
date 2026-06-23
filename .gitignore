@@ -28,6 +28,7 @@ staticfiles/
 _*.py
 *.log
 cloudflared.exe
+tunnel_url.txt
 
 # OS
 .DS_Store
