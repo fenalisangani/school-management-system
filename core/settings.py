@@ -74,6 +74,14 @@ _tunnel_url = os.environ.get('TUNNEL_URL', '').strip()
 if _tunnel_url:
     _add_csrf_origin(_tunnel_url)
 
+_tunnel_file = BASE_DIR / 'tunnel_url.txt'
+if DEBUG and _tunnel_file.exists():
+    _add_csrf_origin(_tunnel_file.read_text(encoding='utf-8-sig').strip())
+
+# Quick tunnels terminate TLS; trust forwarded proto during local demos.
+if DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -92,7 +100,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'core.middleware.TunnelCsrfMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.LoginRequiredMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',

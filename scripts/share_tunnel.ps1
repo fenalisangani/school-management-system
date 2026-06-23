@@ -40,6 +40,8 @@ if (-not $TunnelUrl) {
     exit 1
 }
 
+$TunnelUrl | Out-File -FilePath (Join-Path $Root "tunnel_url.txt") -Encoding utf8 -NoNewline
+
 Write-Host ""
 Write-Host "========================================"
 Write-Host " SHARE THIS LINK WITH YOUR MANAGER:"
