@@ -1,6 +1,6 @@
 # Start Cloudflare quick tunnel for local demo sharing.
 # Usage: .\scripts\share_tunnel.ps1
-# Keeps Django on port 8765 and prints a public https link for your manager.
+# Keeps Django on port 8765 and prints a public https link for sharing.
 
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
@@ -44,7 +44,7 @@ $TunnelUrl | Out-File -FilePath (Join-Path $Root "tunnel_url.txt") -Encoding utf
 
 Write-Host ""
 Write-Host "========================================"
-Write-Host " SHARE THIS LINK WITH YOUR MANAGER:"
+Write-Host " SHARE THIS LINK:"
 Write-Host " $TunnelUrl"
 Write-Host "========================================"
 Write-Host ""
