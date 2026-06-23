@@ -27,6 +27,7 @@ staticfiles/
 # Local helper scripts / logs
 _*.py
 *.log
+cloudflared.exe
 
 # OS
 .DS_Store

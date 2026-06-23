@@ -36,4 +36,5 @@ def site_settings(request):
         'header_time': now.strftime('%I:%M %p'),
         'header_title': header_title,
         'header_subtitle': header_subtitle,
+        'show_demo_login_hint': getattr(settings, 'SHOW_DEMO_LOGIN_HINT', settings.DEBUG),
     }

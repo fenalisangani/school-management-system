@@ -69,7 +69,10 @@ if not DEBUG:
         _add_allowed_host(host)
         _add_csrf_origin(host)
 
-# Local tunnel demos — set CSRF_TRUSTED_ORIGINS to your tunnel URL in env when needed.
+# Cloudflare tunnel — set TUNNEL_URL=https://your-subdomain.trycloudflare.com when sharing locally.
+_tunnel_url = os.environ.get('TUNNEL_URL', '').strip()
+if _tunnel_url:
+    _add_csrf_origin(_tunnel_url)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -174,6 +177,9 @@ APP_VERSION = '1.0.0'
 # Set LOGIN_PAGE_VISIBLE=False in env to show a maintenance screen instead of /login/.
 # All login code stays in place — flip back to True (or remove the var) to restore it.
 LOGIN_PAGE_VISIBLE = env_bool('LOGIN_PAGE_VISIBLE', True)
+
+# Demo credentials on the login page — shown locally (DEBUG=True), hidden on production.
+SHOW_DEMO_LOGIN_HINT = env_bool('SHOW_DEMO_LOGIN_HINT', DEBUG)
 
 USE_I18N = True
 

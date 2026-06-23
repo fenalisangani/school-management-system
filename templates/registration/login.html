@@ -50,7 +50,9 @@
                 <button type="submit" class="btn btn-primary btn-lg auth-submit">Sign in to dashboard</button>
             </form>
 
+            {% if show_demo_login_hint %}
             <p class="auth-hint">Demo login: <strong>admin</strong> / <strong>Admin@12345</strong></p>
+            {% endif %}
         </div>
     </div>
 </body>
