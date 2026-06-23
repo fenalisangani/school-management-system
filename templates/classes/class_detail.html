@@ -7,31 +7,63 @@
 <div class="page-header">
     <div class="page-header-text">
         <h1>{{ school_class.name }}</h1>
-        <p class="page-subtitle">{{ school_class.class_id }} · {{ school_class.academic_year }} · <span class="badge badge-{{ school_class.status }}">{{ school_class.get_status_display }}</span></p>
+        <p class="page-subtitle">
+            {{ school_class.class_id }} · {{ school_class.academic_year }} ·
+            <span class="badge badge-{{ school_class.status }}">{{ school_class.get_status_display }}</span>
+            · <span class="badge {% if school_class.institution_type == 'college' %}badge-partial{% else %}badge-active{% endif %}">{{ school_class.get_institution_type_display }}</span>
+        </p>
     </div>
     <div class="row-actions">
+        <a href="{% url 'school_class_students' school_class.pk %}" class="btn btn-primary">View students ({{ student_count }})</a>
+        <a href="{% url 'student_create' %}?class={{ school_class.pk }}&institution_type={{ school_class.institution_type }}" class="btn btn-secondary">Register</a>
+        <a href="{% url 'bulk_student_attendance' %}?class={{ school_class.pk }}&institution_type={{ school_class.institution_type }}" class="btn btn-secondary">Attendance</a>
         <a href="{% url 'school_class_edit' school_class.pk %}" class="btn btn-secondary">Edit</a>
-        <a href="{% url 'school_class_delete' school_class.pk %}" class="btn btn-danger">Delete</a>
     </div>
+</div>
+
+<div class="workflow-strip">
+    {% if school_class.institution_type == 'college' %}
+    <div class="workflow-step"><strong>College track</strong><span>Course → Semester → Division</span></div>
+    <div class="workflow-step"><strong>Program</strong><span>{{ school_class.get_program_type_display }} · {{ school_class.total_semesters }} semesters</span></div>
+    {% else %}
+    <div class="workflow-step"><strong>School track</strong><span>Class → Academic year → Division</span></div>
+    <div class="workflow-step"><strong>Year</strong><span>{{ school_class.academic_year }}</span></div>
+    {% endif %}
+    <div class="workflow-step"><strong>Enrolled</strong><span>{{ student_count }} active student{{ student_count|pluralize }}</span></div>
 </div>
 
 <div class="detail-grid">
     <div class="panel-card">
-        <h2>Sections</h2>
+        <h2>Divisions / sections</h2>
         <ul class="list-plain">
             {% for s in school_class.sections.all %}
-            <li>Section <strong>{{ s.name }}</strong></li>
-            {% empty %}<li>No sections defined</li>{% endfor %}
+            <li>
+                Division <strong>{{ s.name }}</strong>
+                <a href="{% url 'school_class_students' school_class.pk %}?section={{ s.pk }}" class="btn-mini">Students</a>
+            </li>
+            {% empty %}<li>No divisions defined — <a href="{% url 'section_create' %}">add one</a></li>{% endfor %}
         </ul>
     </div>
     <div class="panel-card">
-        <h2>Subjects</h2>
+        <h2>Subjects / courses</h2>
         <ul class="list-plain">
             {% for cs in school_class.class_subjects.all %}
             <li>{{ cs.subject }} <span class="badge badge-inactive">{{ cs.subject.credit_hours }} cr</span></li>
-            {% empty %}<li>No subjects assigned</li>{% endfor %}
+            {% empty %}<li>No subjects assigned — <a href="{% url 'class_subject_create' %}">assign one</a></li>{% endfor %}
         </ul>
     </div>
 </div>
+
+{% if school_class.uses_semesters %}
+<div class="panel-card" style="margin-top:1rem">
+    <h2>Semesters</h2>
+    <div class="filter-tabs">
+        {% for n in school_class.get_semester_choices %}
+        <a href="{% url 'school_class_students' school_class.pk %}?semester={{ n }}">Semester {{ n }}</a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
 <a href="{% url 'class_list' %}" class="back-link">← Back to classes</a>
 {% endblock %}

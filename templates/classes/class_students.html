@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Students — {{ school_class.name }}{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb">
+    <a href="{% url 'dashboard' %}">Dashboard</a> /
+    <a href="{% url 'class_list' %}">Classes</a> /
+    <a href="{% url 'school_class_detail' school_class.pk %}">{{ school_class.name }}</a> /
+    Students
+</nav>
+
+<div class="page-header">
+    <div class="page-header-text">
+        <h1>{{ school_class.name }} — Students</h1>
+        <p class="page-subtitle">
+            {% if school_class.institution_type == 'college' %}
+            Course · {{ school_class.academic_year }} · Semester-wise
+            {% else %}
+            Class · {{ school_class.academic_year }} · Year-wise · Section-wise
+            {% endif %}
+        </p>
+    </div>
+    <div class="actions">
+        <a href="{% url 'student_create' %}?class={{ school_class.pk }}&institution_type={{ school_class.institution_type }}" class="btn btn-primary">+ Register student</a>
+        <a href="{% url 'bulk_student_attendance' %}?class={{ school_class.pk }}&institution_type={{ school_class.institution_type }}" class="btn btn-secondary">Mark attendance</a>
+    </div>
+</div>
+
+<div class="list-toolbar">
+    <form method="get" class="search-form">
+        <label class="sr-only" for="section-filter">Division</label>
+        <select name="section" id="section-filter" onchange="this.form.submit()">
+            <option value="">All divisions</option>
+            {% for s in sections %}
+            <option value="{{ s.pk }}" {% if selected_section == s.pk|stringformat:"s" %}selected{% endif %}>Division {{ s.name }}</option>
+            {% endfor %}
+        </select>
+        {% if semesters %}
+        <label class="sr-only" for="semester-filter">Semester</label>
+        <select name="semester" id="semester-filter" onchange="this.form.submit()">
+            <option value="">All semesters</option>
+            {% for n in semesters %}
+            <option value="{{ n }}" {% if selected_semester == n|stringformat:"s" %}selected{% endif %}>Semester {{ n }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+        {% if selected_section or selected_semester %}
+        <a href="{% url 'school_class_students' school_class.pk %}" class="btn btn-secondary btn-sm">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Division</th>
+                    {% if school_class.uses_semesters %}<th>Semester</th>{% endif %}
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in enrollments %}
+                <tr>
+                    <td><strong>{{ e.student.student_id }}</strong></td>
+                    <td>{{ e.student.full_name }}</td>
+                    <td>{{ e.student.phone|default:"—" }}</td>
+                    <td>Division {{ e.section.name }}</td>
+                    {% if school_class.uses_semesters %}<td>Sem {{ e.semester }}</td>{% endif %}
+                    <td>
+                        <div class="row-actions">
+                            <a href="{% url 'student_detail' e.student.pk %}" class="btn-mini">Profile</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row">
+                    <td colspan="{% if school_class.uses_semesters %}6{% else %}5{% endif %}">
+                        No students enrolled{% if selected_section or selected_semester %} for this filter{% endif %}.
+                        <a href="{% url 'student_create' %}?class={{ school_class.pk }}&institution_type={{ school_class.institution_type }}">Register one</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<a href="{% url 'school_class_detail' school_class.pk %}" class="back-link">← Back to class</a>
+{% endblock %}

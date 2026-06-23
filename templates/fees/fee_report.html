@@ -15,6 +15,8 @@
     </div>
 </div>
 
+{% include 'partials/class_scope_filter.html' with filter_form=filter_form filter_clear_url=request.path %}
+
 <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 1.5rem;">
     <article class="stat-card stat-emerald">
         <div class="stat-icon" style="background:#ecfdf5;color:#10b981">

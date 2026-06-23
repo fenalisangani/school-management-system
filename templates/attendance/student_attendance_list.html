@@ -17,7 +17,12 @@
 </div>
 
 <div class="list-toolbar">
+    {% include 'partials/class_scope_filter.html' with filter_form=filter_form filter_clear_url=request.path %}
     <form method="get" class="search-form" role="search">
+        {% if request.GET.institution_type %}<input type="hidden" name="institution_type" value="{{ request.GET.institution_type }}">{% endif %}
+        {% if request.GET.school_class %}<input type="hidden" name="school_class" value="{{ request.GET.school_class }}">{% endif %}
+        {% if request.GET.section %}<input type="hidden" name="section" value="{{ request.GET.section }}">{% endif %}
+        {% if request.GET.semester %}<input type="hidden" name="semester" value="{{ request.GET.semester }}">{% endif %}
         <input type="search" name="q" value="{{ query }}" placeholder="Search by student name…" aria-label="Search attendance">
         <button type="submit" class="btn btn-secondary">Search</button>
         {% if query %}<a href="{% url 'student_attendance_list' %}" class="btn btn-secondary">Clear</a>{% endif %}

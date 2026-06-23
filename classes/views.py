@@ -156,4 +156,38 @@ def school_class_detail(request, pk):
         ),
         pk=pk,
     )
-    return render(request, 'classes/class_detail.html', {'school_class': school_class})
+    student_count = school_class.enrollments.filter(is_current=True).count()
+    return render(request, 'classes/class_detail.html', {
+        'school_class': school_class,
+        'student_count': student_count,
+    })
+
+
+def school_class_students(request, pk):
+    school_class = get_object_or_404(
+        SchoolClass.objects.select_related('academic_year').prefetch_related('sections'),
+        pk=pk,
+    )
+    section_id = request.GET.get('section', '').strip()
+    semester = request.GET.get('semester', '').strip()
+
+    enrollments = (
+        school_class.enrollments.filter(is_current=True)
+        .select_related('student', 'section', 'academic_year')
+        .order_by('section__name', 'semester', 'student__full_name')
+    )
+    if section_id:
+        enrollments = enrollments.filter(section_id=section_id)
+    if semester:
+        enrollments = enrollments.filter(semester=int(semester))
+    elif not school_class.uses_semesters:
+        enrollments = enrollments.filter(semester__isnull=True)
+
+    return render(request, 'classes/class_students.html', {
+        'school_class': school_class,
+        'enrollments': enrollments,
+        'sections': school_class.sections.all(),
+        'semesters': school_class.get_semester_choices() if school_class.uses_semesters else [],
+        'selected_section': section_id,
+        'selected_semester': semester,
+    })

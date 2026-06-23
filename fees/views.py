@@ -18,6 +18,7 @@ from .forms import (
     StudentFeeAssignmentForm,
 )
 from .models import FeePayment, FeeStructure, FeeStructureItem, PaymentStatus, StudentFeeAssignment
+from students.models import StudentEnrollment
 
 FeeStructureItemFormSet = inlineformset_factory(
     FeeStructure,
@@ -163,17 +164,39 @@ def fee_receipt(request, pk):
 
 
 def fee_report(request):
+    from core.forms import ClassScopeFilterForm
+
+    filter_form = ClassScopeFilterForm(request.GET or None)
     payments = FeePayment.objects.select_related(
-        'assignment__student', 'assignment__fee_structure',
+        'assignment__student', 'assignment__fee_structure__school_class',
     )
-    total_collected = payments.aggregate(total=Sum('amount'))['total'] or 0
     defaulters = StudentFeeAssignment.objects.filter(
         status__in=[PaymentStatus.PENDING, PaymentStatus.PARTIAL],
-    ).select_related('student', 'fee_structure')
+    ).select_related('student', 'fee_structure__school_class')
+
+    if filter_form.is_valid():
+        school_class = filter_form.cleaned_data.get('school_class')
+        section = filter_form.cleaned_data.get('section')
+        inst = filter_form.cleaned_data.get('institution_type')
+        if inst:
+            payments = payments.filter(assignment__fee_structure__school_class__institution_type=inst)
+            defaulters = defaulters.filter(fee_structure__school_class__institution_type=inst)
+        if school_class:
+            payments = payments.filter(assignment__fee_structure__school_class=school_class)
+            defaulters = defaulters.filter(fee_structure__school_class=school_class)
+        if section:
+            student_ids = StudentEnrollment.objects.filter(
+                section=section, is_current=True,
+            ).values_list('student_id', flat=True)
+            payments = payments.filter(assignment__student_id__in=student_ids)
+            defaulters = defaulters.filter(student_id__in=student_ids)
+
+    total_collected = payments.aggregate(total=Sum('amount'))['total'] or 0
     return render(request, 'fees/fee_report.html', {
         'payments': payments[:50],
         'total_collected': total_collected,
         'defaulters': defaulters,
+        'filter_form': filter_form,
     })
 
 

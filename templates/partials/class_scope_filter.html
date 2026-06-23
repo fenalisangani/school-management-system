@@ -1,0 +1,19 @@
+<form method="get" class="list-toolbar class-scope-filter"{% if filter_form_id %} id="{{ filter_form_id }}"{% endif %}>
+    {% for field in filter_form %}
+    <div class="form-field filter-field">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+    </div>
+    {% endfor %}
+    {% if preserve_query %}
+    {% for key, value in preserve_query.items %}
+    <input type="hidden" name="{{ key }}" value="{{ value }}">
+    {% endfor %}
+    {% endif %}
+    <div class="filter-actions">
+        <button type="submit" class="btn btn-secondary btn-sm">Apply filter</button>
+        {% if filter_clear_url %}
+        <a href="{{ filter_clear_url }}" class="btn btn-secondary btn-sm">Clear</a>
+        {% endif %}
+    </div>
+</form>

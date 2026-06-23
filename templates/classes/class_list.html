@@ -61,6 +61,7 @@
                     <td>
                         <div class="row-actions">
                             <a href="{% url 'school_class_detail' c.pk %}" class="btn-mini">View</a>
+                            <a href="{% url 'school_class_students' c.pk %}" class="btn-mini">Students</a>
                             <a href="{% url 'school_class_edit' c.pk %}" class="btn-mini">Edit</a>
                             <a href="{% url 'school_class_delete' c.pk %}" class="btn-mini danger">Delete</a>
                         </div>

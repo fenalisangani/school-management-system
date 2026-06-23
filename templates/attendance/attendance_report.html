@@ -7,13 +7,15 @@
 <div class="page-header">
     <div class="page-header-text">
         <h1>Attendance Analytics</h1>
-        <p class="page-subtitle">Minimum required: <strong>{{ min_pct }}%</strong></p>
+        <p class="page-subtitle">Minimum required: <strong>{{ min_pct }}%</strong>{% if scope_label %} · {{ scope_label }}{% endif %}</p>
     </div>
     <div class="actions">
-        <a href="{% url 'attendance_report_export' %}" class="btn btn-primary">⬇ Export to Excel (CSV)</a>
+        <a href="{% url 'attendance_report_export' %}?{{ request.GET.urlencode }}" class="btn btn-primary">⬇ Export to Excel (CSV)</a>
         <a href="{% url 'attendance_rule_create' %}" class="btn btn-secondary">Configure rules</a>
     </div>
 </div>
+
+{% include 'partials/class_scope_filter.html' with filter_form=filter_form filter_clear_url=request.path %}
 
 {% if defaulters %}
 <div class="alert-banner" style="margin-bottom:1.25rem">
@@ -28,16 +30,18 @@
 <div class="card">
     <div class="table-scroll">
         <table class="data-table">
-            <thead><tr><th>Student</th><th>Attendance %</th><th>Status</th></tr></thead>
+            <thead><tr><th>Student</th><th>Present</th><th>Total</th><th>Attendance %</th><th>Status</th></tr></thead>
             <tbody>
                 {% for s in summaries %}
                 <tr class="{% if s.short %}row-warning{% endif %}">
                     <td><strong>{{ s.name }}</strong></td>
+                    <td>{{ s.present }}</td>
+                    <td>{{ s.total }}</td>
                     <td>{{ s.percentage }}%</td>
                     <td>{% if s.short %}<span class="badge badge-pending">Below minimum</span>{% else %}<span class="badge badge-paid">On track</span>{% endif %}</td>
                 </tr>
                 {% empty %}
-                <tr class="empty-row"><td colspan="3">No attendance data yet.</td></tr>
+                <tr class="empty-row"><td colspan="5">No attendance data yet.</td></tr>
                 {% endfor %}
             </tbody>
         </table>

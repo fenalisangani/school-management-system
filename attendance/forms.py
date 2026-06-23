@@ -75,24 +75,35 @@ class BulkStudentAttendanceForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        inst = self.data.get('institution_type') if self.data else InstitutionType.SCHOOL
+        inst = InstitutionType.SCHOOL
+        if self.data.get('institution_type'):
+            inst = self.data.get('institution_type')
+        elif self.initial.get('institution_type'):
+            inst = self.initial.get('institution_type')
+
         self.fields['school_class'].queryset = SchoolClass.objects.filter(
             institution_type=inst, status='active',
         ).select_related('academic_year')
         self.fields['school_class'].label = 'Course' if inst == InstitutionType.COLLEGE else 'Class / Standard'
 
-        class_id = self.data.get('school_class') if self.data else None
+        class_id = self.data.get('school_class') or self.initial.get('school_class')
         if class_id:
             self.fields['section'].queryset = Section.objects.filter(school_class_id=class_id)
+            if self.initial.get('section'):
+                self.fields['section'].initial = self.initial['section']
             sc = SchoolClass.objects.filter(pk=class_id).first()
             if sc and sc.uses_semesters:
                 self.fields['semester'].required = True
                 self.fields['semester'].choices = [
                     ('', 'Select semester'),
                 ] + [(str(n), f'Semester {n}') for n in sc.get_semester_choices()]
+                if self.initial.get('semester'):
+                    self.fields['semester'].initial = str(self.initial['semester'])
             else:
                 self.fields['semester'].required = False
                 self.fields['semester'].choices = [('', 'Not applicable (school)')]
+        else:
+            self.fields['section'].queryset = Section.objects.none()
 
     def clean(self):
         cleaned = super().clean()

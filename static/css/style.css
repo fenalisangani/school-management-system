@@ -2077,3 +2077,85 @@ a:hover { color: var(--accent-2); }
     font-weight: 700;
     letter-spacing: 0.02em;
 }
+
+/* Class workflow + scope filters */
+.workflow-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(145deg, #eef2ff 0%, #faf5ff 100%);
+    border: 1px solid #e0e7ff;
+    border-radius: var(--radius);
+}
+
+.workflow-step {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 140px;
+}
+
+.workflow-step strong {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+}
+
+.workflow-step span {
+    font-size: 0.88rem;
+    color: var(--text);
+    font-weight: 600;
+}
+
+.class-scope-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.class-scope-filter .filter-field {
+    min-width: 150px;
+    margin: 0;
+}
+
+.class-scope-filter .filter-field label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+}
+
+.class-scope-filter select {
+    width: 100%;
+    min-width: 150px;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font);
+    font-size: 0.88rem;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}

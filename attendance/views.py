@@ -8,6 +8,8 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 
+from core.forms import ClassScopeFilterForm
+from core.scope_filters import filter_attendance_queryset
 from core.view_helpers import paginate, render_model_form
 from students.models import StudentEnrollment
 
@@ -24,6 +26,10 @@ def student_attendance_list(request):
     records = StudentAttendance.objects.select_related(
         'student', 'school_class', 'section', 'subject',
     )
+    filter_form = ClassScopeFilterForm(request.GET or None)
+    if filter_form.is_valid():
+        records = filter_attendance_queryset(records, filter_form)
+
     query = request.GET.get('q', '').strip()
     if query:
         records = records.filter(student__full_name__icontains=query)
@@ -32,6 +38,7 @@ def student_attendance_list(request):
         'records': page_obj,
         'page_obj': page_obj,
         'query': query,
+        'filter_form': filter_form,
     })
 
 
@@ -50,7 +57,19 @@ def student_attendance_create(request):
 
 
 def bulk_student_attendance(request):
-    bulk_form = BulkStudentAttendanceForm(request.POST or None)
+    get_initial = {}
+    if request.method != 'POST':
+        if request.GET.get('institution_type') in ('school', 'college'):
+            get_initial['institution_type'] = request.GET['institution_type']
+        class_pk = request.GET.get('class')
+        if class_pk:
+            get_initial['school_class'] = class_pk
+        if request.GET.get('section'):
+            get_initial['section'] = request.GET['section']
+        if request.GET.get('semester'):
+            get_initial['semester'] = request.GET['semester']
+
+    bulk_form = BulkStudentAttendanceForm(request.POST or None, initial=get_initial or None)
     students = []
     school_class = section = date = None
     selected_semester = None
@@ -140,9 +159,13 @@ def teacher_attendance_create(request):
     )
 
 
-def _attendance_summary():
+def _attendance_summary(filter_form=None):
+    records = StudentAttendance.objects.all()
+    if filter_form and filter_form.is_valid():
+        records = filter_attendance_queryset(records, filter_form)
+
     total_by_student = (
-        StudentAttendance.objects.values('student_id', 'student__full_name')
+        records.values('student_id', 'student__full_name')
         .annotate(
             total=Count('id'),
             present=Count('id', filter=Q(status=AttendanceStatus.PRESENT)),
@@ -165,17 +188,38 @@ def _attendance_summary():
 
 
 def attendance_report(request):
-    summaries, min_pct = _attendance_summary()
+    filter_form = ClassScopeFilterForm(request.GET or None)
+    summaries, min_pct = _attendance_summary(filter_form)
+    scope_label = _scope_label(filter_form)
     return render(request, 'attendance/attendance_report.html', {
         'summaries': summaries,
         'defaulters': [s for s in summaries if s['short']],
         'min_pct': min_pct,
+        'filter_form': filter_form,
+        'scope_label': scope_label,
     })
+
+
+def _scope_label(filter_form):
+    if not filter_form.is_valid():
+        return 'All classes'
+    parts = []
+    sc = filter_form.cleaned_data.get('school_class')
+    sec = filter_form.cleaned_data.get('section')
+    sem = filter_form.selected_semester()
+    if sc:
+        parts.append(str(sc.name))
+    if sec:
+        parts.append(f'Division {sec.name}')
+    if sem:
+        parts.append(f'Semester {sem}')
+    return ' · '.join(parts) if parts else 'All classes / courses'
 
 
 def attendance_report_export(request):
     """Download the attendance summary as a CSV (opens in Excel)."""
-    summaries, min_pct = _attendance_summary()
+    filter_form = ClassScopeFilterForm(request.GET or None)
+    summaries, min_pct = _attendance_summary(filter_form)
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = (
         f'attachment; filename="attendance_report_{timezone.localdate()}.csv"'
