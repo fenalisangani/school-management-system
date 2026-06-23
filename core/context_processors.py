@@ -7,9 +7,9 @@ def site_settings(request):
     path = request.path
 
     page_titles = {
-        '/': ('Dashboard', 'Overview & institution stats'),
-        '/classes/': ('Classes', 'Academic years, sections & subjects'),
-        '/students/': ('Students', 'Registration & enrollment'),
+        '/': ('Dashboard', 'School & college analytics workspace'),
+        '/classes/': ('Classes & Courses', 'School standards · College programs'),
+        '/students/': ('Students', 'School & college enrollment'),
         '/teachers/': ('Teachers', 'Faculty & assignments'),
         '/fees/': ('Fees', f'Billing in {getattr(settings, "CURRENCY_SYMBOL", "₹")} INR'),
         '/attendance/': ('Attendance', 'Daily records & reports'),

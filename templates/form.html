@@ -16,7 +16,7 @@
 </div>
 
 <div class="form-page">
-    <form method="post" class="form-card"{% if multipart %} enctype="multipart/form-data"{% endif %}
+    <form method="post" class="form-card form-card-pro"{% if multipart %} enctype="multipart/form-data"{% endif %}
           {% if cascade_form %}data-cascade-form{% endif %}>
         {% csrf_token %}
         {% if form.non_field_errors %}

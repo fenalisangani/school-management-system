@@ -14,6 +14,12 @@ from teachers.models import Teacher
 
 def dashboard(request):
     active_year = AcademicYear.objects.filter(is_active=True, is_archived=False).first()
+    attendance_today = StudentAttendance.objects.filter(date=timezone.localdate()).count()
+    present_today = StudentAttendance.objects.filter(
+        date=timezone.localdate(), status=AttendanceStatus.PRESENT,
+    ).count()
+    attendance_rate = round((present_today / attendance_today) * 100) if attendance_today else 0
+
     stats = {
         'classes': SchoolClass.objects.filter(status='active').count(),
         'school_classes': SchoolClass.objects.filter(status='active', institution_type=InstitutionType.SCHOOL).count(),
@@ -25,7 +31,8 @@ def dashboard(request):
         'pending_fees': StudentFeeAssignment.objects.filter(
             status__in=[PaymentStatus.PENDING, PaymentStatus.PARTIAL],
         ).count(),
-        'attendance_today': StudentAttendance.objects.filter(date=timezone.localdate()).count(),
+        'attendance_today': attendance_today,
+        'attendance_rate': attendance_rate,
     }
     setup_done = all([
         AcademicYear.objects.exists(),

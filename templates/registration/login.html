@@ -9,37 +9,49 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20260620">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20260623">
 </head>
-<body class="auth-body">
-    <div class="auth-card">
-        <div class="auth-brand">
-            <div class="auth-logo">
-                {% include 'partials/logo.html' %}
+<body class="auth-body auth-body-pro">
+    <div class="auth-bg-grid" aria-hidden="true"></div>
+    <div class="auth-layout">
+        <aside class="auth-showcase">
+            <div class="auth-showcase-inner">
+                <div class="auth-logo auth-logo-lg">{% include 'partials/logo.html' %}</div>
+                <h2>School &amp; College<br><span class="gradient-text">Management Platform</span></h2>
+                <p>One advanced workspace for classes, courses, semesters, fees in ₹ INR, and attendance.</p>
+                <ul class="auth-feature-list">
+                    <li>School — Class · Division · Attendance</li>
+                    <li>College — Course · Semester · Division</li>
+                    <li>Reports, receipts &amp; analytics</li>
+                </ul>
             </div>
-            <h1>School Management System</h1>
-            <p>Sign in to manage classes, students, fees &amp; attendance</p>
+        </aside>
+        <div class="auth-card auth-card-pro">
+            <div class="auth-brand">
+                <h1>Welcome back</h1>
+                <p>Sign in to your institution dashboard</p>
+            </div>
+
+            {% if form.errors %}
+            <div class="auth-error">Invalid username or password. Please try again.</div>
+            {% endif %}
+
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <div class="form-field">
+                    <label for="id_username">Username</label>
+                    <input type="text" name="username" id="id_username" autofocus required autocomplete="username" placeholder="Enter username">
+                </div>
+                <div class="form-field">
+                    <label for="id_password">Password</label>
+                    <input type="password" name="password" id="id_password" required autocomplete="current-password" placeholder="Enter password">
+                </div>
+                <input type="hidden" name="next" value="{{ next }}">
+                <button type="submit" class="btn btn-primary btn-lg auth-submit">Sign in to dashboard</button>
+            </form>
+
+            <p class="auth-hint">Demo login: <strong>admin</strong> / <strong>Admin@12345</strong></p>
         </div>
-
-        {% if form.errors %}
-        <div class="auth-error">Invalid username or password. Please try again.</div>
-        {% endif %}
-
-        <form method="post" class="auth-form">
-            {% csrf_token %}
-            <div class="form-field">
-                <label for="id_username">Username</label>
-                <input type="text" name="username" id="id_username" autofocus required autocomplete="username">
-            </div>
-            <div class="form-field">
-                <label for="id_password">Password</label>
-                <input type="password" name="password" id="id_password" required autocomplete="current-password">
-            </div>
-            <input type="hidden" name="next" value="{{ next }}">
-            <button type="submit" class="btn btn-primary btn-lg auth-submit">Sign in</button>
-        </form>
-
-        <p class="auth-hint">Tip: use your administrator account, or the demo login <strong>admin / Admin@12345</strong>.</p>
     </div>
 </body>
 </html>

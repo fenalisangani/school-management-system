@@ -3,187 +3,220 @@
 {% block title %}Dashboard — School Management System{% endblock %}
 
 {% block content %}
-<section class="hero-banner">
+<section class="hero-banner hero-advanced">
     <div class="hero-content">
-        <p class="hero-eyebrow">Welcome back</p>
-        <h1 class="hero-title">Institution<br><span class="gradient-text">Command Center</span></h1>
+        <div class="hero-badges">
+            <span class="hero-pill">School &amp; College ERP</span>
+            <span class="hero-pill hero-pill-live"><span class="pulse-dot"></span> Live workspace</span>
+        </div>
+        <h1 class="hero-title">Unified<br><span class="gradient-text">Institution Platform</span></h1>
         {% if active_year %}
-        <p class="hero-desc">Academic year <strong>{{ active_year.name }}</strong> is active. Manage classes, students, fees, and attendance from one place.</p>
+        <p class="hero-desc">Academic year <strong>{{ active_year.name }}</strong> — manage school sections and college semesters, fees in ₹ INR, and daily attendance from one advanced dashboard.</p>
         {% else %}
-        <p class="hero-desc">Get started by creating an <a href="{% url 'academic_year_create' %}">academic year</a>, then add classes and enroll students.</p>
+        <p class="hero-desc">Create an <a href="{% url 'academic_year_create' %}">academic year</a>, then set up classes, courses, and enroll students.</p>
         {% endif %}
         <div class="hero-actions">
-            <a href="{% url 'student_create' %}" class="btn btn-primary btn-lg">
+            <a href="{% url 'enrollment_create' %}" class="btn btn-primary btn-lg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-                New student
+                Enroll student
             </a>
-            <a href="{% url 'bulk_student_attendance' %}" class="btn btn-ghost btn-lg">Bulk attendance</a>
+            <a href="{% url 'bulk_student_attendance' %}" class="btn btn-ghost btn-lg">Mark attendance</a>
+            <a href="{% url 'class_list' %}?type=college" class="btn btn-ghost btn-lg">College courses</a>
         </div>
     </div>
-    <div class="hero-visual" aria-hidden="true">
+    <div class="hero-visual hero-visual-advanced" aria-hidden="true">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
-        <div class="hero-card-float">
-            <span class="float-label">Today</span>
-            <span class="float-value">{{ stats.attendance_today }}</span>
-            <span class="float-sub">attendance records</span>
+        <div class="hero-metric-stack">
+            <div class="hero-metric-card">
+                <span class="float-label">Today</span>
+                <span class="float-value" data-count="{{ stats.attendance_today }}">{{ stats.attendance_today }}</span>
+                <span class="float-sub">attendance records</span>
+            </div>
+            <div class="hero-metric-card hero-metric-accent">
+                <span class="float-label">Present rate</span>
+                <span class="float-value"><span data-count="{{ stats.attendance_rate }}">{{ stats.attendance_rate }}</span>%</span>
+                <span class="float-sub">today's snapshot</span>
+            </div>
         </div>
     </div>
 </section>
 
-{% if not setup_done %}
-<div class="alert-banner">
-    <div class="alert-icon">💡</div>
-    <div>
-        <strong>Quick start</strong>
-        <p>Load sample data: <code>py manage.py seed_demo</code> then refresh.</p>
+<div class="platform-strip">
+    <div class="platform-item">
+        <strong>School track</strong>
+        <span>Class → Division → Attendance</span>
+    </div>
+    <div class="platform-divider"></div>
+    <div class="platform-item">
+        <strong>College track</strong>
+        <span>Course → Semester → Division</span>
+    </div>
+    <div class="platform-divider"></div>
+    <div class="platform-item">
+        <strong>Programs</strong>
+        <span>6 sem · 8 sem · 4 sem</span>
     </div>
 </div>
-{% endif %}
 
-<section class="stats-grid">
-    <article class="stat-card stat-indigo">
+<section class="stats-grid stats-grid-pro">
+    <article class="stat-card stat-card-pro stat-indigo animate-in" style="--i:0">
         <div class="stat-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
         </div>
         <div class="stat-body">
-            <span class="stat-value">{{ stats.classes }}</span>
-            <span class="stat-label">Classes & courses</span>
+            <span class="stat-value" data-count="{{ stats.classes }}">{{ stats.classes }}</span>
+            <span class="stat-label">Classes &amp; courses</span>
             <span class="stat-sub">{{ stats.school_classes }} school · {{ stats.college_courses }} college</span>
         </div>
     </article>
-    <article class="stat-card stat-violet">
+    <article class="stat-card stat-card-pro stat-violet animate-in" style="--i:1">
         <div class="stat-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
         </div>
         <div class="stat-body">
-            <span class="stat-value">{{ stats.students }}</span>
+            <span class="stat-value" data-count="{{ stats.students }}">{{ stats.students }}</span>
             <span class="stat-label">Active students</span>
             <span class="stat-sub">{{ stats.school_students }} school · {{ stats.college_students }} college</span>
         </div>
     </article>
-    <article class="stat-card stat-cyan">
+    <article class="stat-card stat-card-pro stat-cyan animate-in" style="--i:2">
         <div class="stat-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </div>
         <div class="stat-body">
-            <span class="stat-value">{{ stats.teachers }}</span>
+            <span class="stat-value" data-count="{{ stats.teachers }}">{{ stats.teachers }}</span>
             <span class="stat-label">Active teachers</span>
+            <span class="stat-sub">Faculty &amp; assignments</span>
         </div>
     </article>
-    <article class="stat-card stat-amber">
+    <article class="stat-card stat-card-pro stat-amber animate-in" style="--i:3">
         <div class="stat-icon">
             {% include 'partials/icon_inr.html' %}
         </div>
         <div class="stat-body">
-            <span class="stat-value">{{ stats.pending_fees }}</span>
-            <span class="stat-label">Pending fees (INR)</span>
+            <span class="stat-value" data-count="{{ stats.pending_fees }}">{{ stats.pending_fees }}</span>
+            <span class="stat-label">Pending fees</span>
+            <span class="stat-sub">Outstanding in ₹ INR</span>
         </div>
     </article>
 </section>
 
-{% if has_attendance or has_fees %}
 <section class="section-block">
     <div class="section-head">
-        <h2>Insights</h2>
-        <p>Live attendance &amp; fee snapshots</p>
+        <h2>Analytics</h2>
+        <p>Real-time attendance trends &amp; fee health</p>
     </div>
-    <div class="chart-grid">
-        <div class="panel-card">
-            <h2>Attendance — last 7 days</h2>
+    <div class="chart-grid chart-grid-pro">
+        <div class="panel-card panel-glass">
+            <div class="panel-head">
+                <h2>Attendance — last 7 days</h2>
+                <span class="panel-tag">Live</span>
+            </div>
             {% if has_attendance %}
-            <canvas id="attendanceChart" height="220"></canvas>
+            <div class="chart-wrap"><canvas id="attendanceChart" height="220"></canvas></div>
             {% else %}
-            <p class="text-muted">No attendance recorded yet.</p>
+            <div class="empty-state-mini">
+                <p>No attendance recorded yet.</p>
+                <a href="{% url 'bulk_student_attendance' %}" class="btn btn-secondary btn-sm">Mark attendance</a>
+            </div>
             {% endif %}
         </div>
-        <div class="panel-card">
-            <h2>Fee status breakdown</h2>
+        <div class="panel-card panel-glass">
+            <div class="panel-head">
+                <h2>Fee status breakdown</h2>
+                <span class="panel-tag">INR</span>
+            </div>
             {% if has_fees %}
-            <canvas id="feeChart" height="220"></canvas>
+            <div class="chart-wrap"><canvas id="feeChart" height="220"></canvas></div>
             {% else %}
-            <p class="text-muted">No fee assignments yet.</p>
+            <div class="empty-state-mini">
+                <p>No fee assignments yet.</p>
+                <a href="{% url 'fee_structure_create' %}" class="btn btn-secondary btn-sm">Add fee structure</a>
+            </div>
             {% endif %}
         </div>
     </div>
 </section>
-{% endif %}
 
 <section class="section-block">
     <div class="section-head">
         <h2>Modules</h2>
-        <p>Jump into any area of your institution</p>
+        <p>Enterprise modules for school &amp; college operations</p>
     </div>
-    <div class="module-grid">
-        <a href="{% url 'class_list' %}" class="module-card module-indigo">
+    <div class="module-grid module-grid-pro">
+        <a href="{% url 'class_list' %}" class="module-card module-card-pro module-indigo">
             <div class="module-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
             </div>
-            <h3>Class Module</h3>
-            <p>Years, sections, subjects & allocations</p>
+            <span class="module-tag">Dual track</span>
+            <h3>Classes &amp; Courses</h3>
+            <p>School standards · College programs · Divisions</p>
             <span class="module-arrow">→</span>
         </a>
-        <a href="{% url 'teacher_list' %}" class="module-card module-violet">
-            <div class="module-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
-            <h3>Teachers</h3>
-            <p>Faculty profiles & assignments</p>
-            <span class="module-arrow">→</span>
-        </a>
-        <a href="{% url 'student_list' %}" class="module-card module-cyan">
+        <a href="{% url 'student_list' %}" class="module-card module-card-pro module-cyan">
             <div class="module-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
             </div>
+            <span class="module-tag">Enrollment</span>
             <h3>Students</h3>
-            <p>Registration, enrollment & docs</p>
+            <p>Registration · Semester enroll · Documents</p>
             <span class="module-arrow">→</span>
         </a>
-        <a href="{% url 'fee_structure_list' %}" class="module-card module-amber">
+        <a href="{% url 'teacher_list' %}" class="module-card module-card-pro module-violet">
+            <div class="module-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <span class="module-tag">Faculty</span>
+            <h3>Teachers</h3>
+            <p>Profiles · Class assignments · Workload</p>
+            <span class="module-arrow">→</span>
+        </a>
+        <a href="{% url 'fee_structure_list' %}" class="module-card module-card-pro module-amber">
             <div class="module-icon">
                 {% include 'partials/icon_inr.html' %}
             </div>
+            <span class="module-tag">Finance</span>
             <h3>Fees (₹)</h3>
-            <p>INR billing, payments & reports</p>
+            <p>Structures · Payments · Receipts · Reports</p>
             <span class="module-arrow">→</span>
         </a>
-        <a href="{% url 'bulk_student_attendance' %}" class="module-card module-emerald">
+        <a href="{% url 'bulk_student_attendance' %}" class="module-card module-card-pro module-emerald">
             <div class="module-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
             </div>
+            <span class="module-tag">Daily ops</span>
             <h3>Attendance</h3>
-            <p>Daily marking & analytics</p>
+            <p>Bulk marking · Analytics · Export</p>
             <span class="module-arrow">→</span>
         </a>
     </div>
 </section>
 
 <section class="section-block two-col">
-    <div class="panel-card">
-        <h2>Setup workflow</h2>
-        <ol class="workflow-steps">
-            <li><span class="step-num">1</span> Academic year → Class → Sections → Subjects</li>
-            <li><span class="step-num">2</span> Register teachers → Assign to classes</li>
-            <li><span class="step-num">3</span> Register students → Enroll in class</li>
-            <li><span class="step-num">4</span> Fee structure → Assign → Collect</li>
-            <li><span class="step-num">5</span> Bulk attendance daily</li>
+    <div class="panel-card panel-glass">
+        <h2>Smart workflow</h2>
+        <ol class="workflow-steps workflow-steps-pro">
+            <li><span class="step-num">1</span> <strong>School:</strong> Class → Division → Enroll → Attendance</li>
+            <li><span class="step-num">2</span> <strong>College:</strong> Course → Semester → Division → Enroll</li>
+            <li><span class="step-num">3</span> Teachers, fee structures, and INR payments</li>
+            <li><span class="step-num">4</span> Reports, receipts, and CSV exports</li>
         </ol>
     </div>
-    <div class="panel-card panel-accent">
-        <h2>Quick links</h2>
-        <ul class="quick-links">
-            <li><a href="{% url 'school_class_create' %}">Add new class</a></li>
-            <li><a href="{% url 'enrollment_create' %}">Enroll student</a></li>
-            <li><a href="{% url 'fee_payment_create' %}">Record payment</a></li>
-            <li><a href="{% url 'attendance_report' %}">Attendance report</a></li>
-            <li><a href="{% url 'fee_report' %}">Fee defaulters</a></li>
+    <div class="panel-card panel-accent panel-glass">
+        <h2>Quick actions</h2>
+        <ul class="quick-links quick-links-pro">
+            <li><a href="{% url 'school_class_create' %}"><span>Add class / course</span><em>→</em></a></li>
+            <li><a href="{% url 'enrollment_create' %}"><span>Enroll student</span><em>→</em></a></li>
+            <li><a href="{% url 'fee_payment_create' %}"><span>Record payment</span><em>→</em></a></li>
+            <li><a href="{% url 'attendance_report' %}"><span>Attendance report</span><em>→</em></a></li>
+            <li><a href="{% url 'fee_report' %}"><span>Fee defaulters</span><em>→</em></a></li>
         </ul>
     </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
-{% if has_attendance or has_fees %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
 (function () {
@@ -198,15 +231,15 @@
         data: {
             labels: att.labels,
             datasets: [
-                { label: 'Present', data: att.present, backgroundColor: '#4f46e5', borderRadius: 6 },
-                { label: 'Absent', data: att.absent, backgroundColor: '#f43f5e', borderRadius: 6 }
+                { label: 'Present', data: att.present, backgroundColor: 'rgba(79, 70, 229, 0.85)', borderRadius: 8, borderSkipped: false },
+                { label: 'Absent', data: att.absent, backgroundColor: 'rgba(244, 63, 94, 0.75)', borderRadius: 8, borderSkipped: false }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
-            plugins: { legend: { position: 'bottom' } }
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: 'rgba(148,163,184,0.15)' } }, x: { grid: { display: false } } },
+            plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } } }
         }
     });
     {% endif %}
@@ -221,18 +254,18 @@
                 data: fee.data,
                 backgroundColor: ['#f59e0b', '#6366f1', '#10b981'],
                 borderColor: '#fff',
-                borderWidth: 2
+                borderWidth: 3,
+                hoverOffset: 8
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            cutout: '62%',
-            plugins: { legend: { position: 'bottom' } }
+            cutout: '68%',
+            plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } } }
         }
     });
     {% endif %}
 })();
 </script>
-{% endif %}
 {% endblock %}
