@@ -12,6 +12,10 @@ def env_list(name, default=''):
     return [item.strip() for item in os.environ.get(name, default).split(',') if item.strip()]
 
 
+# Render sets RENDER_EXTERNAL_HOSTNAME; used to separate local dev from production env.
+_ON_RENDER = bool(os.environ.get('RENDER_EXTERNAL_HOSTNAME'))
+
+
 # SECURITY: set SECRET_KEY in the hosting environment for production.
 SECRET_KEY = os.environ.get(
     'SECRET_KEY',
@@ -20,6 +24,9 @@ SECRET_KEY = os.environ.get(
 
 # DEBUG defaults to True for local development. Set DEBUG=False on your host.
 DEBUG = env_bool('DEBUG', True)
+if not _ON_RENDER:
+    # Copied Render env vars (DEBUG=False) break local static files and admin styling.
+    DEBUG = True
 
 # Set LOGIN_REQUIRED=False to skip sign-in and open the dashboard directly (demo only).
 LOGIN_REQUIRED = env_bool('LOGIN_REQUIRED', True)
@@ -82,8 +89,7 @@ if DEBUG and _tunnel_file.exists():
     _add_csrf_origin(_tunnel_file.read_text(encoding='utf-8-sig').strip())
 
 # Quick tunnels terminate TLS; trust forwarded proto during local demos.
-_on_render = bool(os.environ.get('RENDER_EXTERNAL_HOSTNAME'))
-if DEBUG or not _on_render:
+if DEBUG or not _ON_RENDER:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     # System env may carry production ALLOWED_HOSTS — always permit local dev off Render.
     for _local in ('127.0.0.1', 'localhost', '[::1]'):
@@ -220,7 +226,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # WhiteNoise serves static files efficiently in production (no separate web server
 # needed). Falls back to Django's default storage when WhiteNoise isn't installed.
-if _WHITENOISE_AVAILABLE:
+if _WHITENOISE_AVAILABLE and _ON_RENDER and not DEBUG:
     STORAGES = {
         'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
         'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
