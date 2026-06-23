@@ -25,23 +25,51 @@ DEBUG = env_bool('DEBUG', True)
 # On a real host, set ALLOWED_HOSTS=yourdomain.com (comma separated).
 ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', '*')
 
-# Needed for HTTPS form submissions (CSRF) on hosted platforms and tunnels.
-# e.g. CSRF_TRUSTED_ORIGINS=https://your-app.onrender.com
-CSRF_TRUSTED_ORIGINS = env_list('CSRF_TRUSTED_ORIGINS', '')
-# Trust Cloudflare quick-tunnel and common host domains so admin/login forms work
-# when shared via a public demo link.
-CSRF_TRUSTED_ORIGINS += [
-    'https://*.trycloudflare.com',
-    'https://*.onrender.com',
-    'https://*.ngrok-free.app',
-    'https://*.ngrok.io',
-]
+# CSRF trusted origins must be exact URLs (Django does not support wildcards).
+CSRF_TRUSTED_ORIGINS = []
 
-# Common platforms expose the external hostname via an env var — trust it automatically.
+
+def _add_csrf_origin(value):
+    """Register an https origin for CSRF checks (exact match only)."""
+    if not value:
+        return
+    origin = value.strip().rstrip('/')
+    if not origin:
+        return
+    if not origin.startswith(('http://', 'https://')):
+        origin = f'https://{origin}'
+    if origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(origin)
+
+
+def _add_allowed_host(host):
+    if not host or host == '*':
+        return
+    host = host.strip()
+    if host and host not in ALLOWED_HOSTS and '*' not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(host)
+
+
+# Explicit env configuration (comma-separated full origins or hostnames).
+for item in env_list('CSRF_TRUSTED_ORIGINS'):
+    _add_csrf_origin(item)
+
+# Render.com exposes the public URL/hostname automatically.
+_render_url = os.environ.get('RENDER_EXTERNAL_URL')
 _render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if _render_url:
+    _add_csrf_origin(_render_url)
 if _render_host:
-    ALLOWED_HOSTS.append(_render_host)
-    CSRF_TRUSTED_ORIGINS.append(f'https://{_render_host}')
+    _add_allowed_host(_render_host)
+    _add_csrf_origin(_render_host)
+
+# Production safety net: trust every non-wildcard ALLOWED_HOSTS entry.
+if not DEBUG:
+    for host in env_list('ALLOWED_HOSTS'):
+        _add_allowed_host(host)
+        _add_csrf_origin(host)
+
+# Local tunnel demos — set CSRF_TRUSTED_ORIGINS to your tunnel URL in env when needed.
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -167,6 +195,8 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    CSRF_COOKIE_SAMESITE = 'Lax'
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
