@@ -1719,6 +1719,47 @@ a:hover { color: var(--accent-2); }
     font-variant-numeric: tabular-nums;
 }
 
+a.stat-card-link {
+    text-decoration: none !important;
+    color: inherit !important;
+    cursor: pointer;
+    position: relative;
+}
+
+a.stat-card-link:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+}
+
+.stat-go {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity var(--transition), transform var(--transition);
+}
+
+a.stat-card-link:hover .stat-go {
+    opacity: 1;
+    transform: translate(4px, -50%);
+    color: var(--accent);
+}
+
+a.hero-metric-link {
+    text-decoration: none !important;
+    color: inherit !important;
+    display: block;
+    cursor: pointer;
+}
+
+a.hero-metric-link:hover {
+    transform: translateX(-4px);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
 /* Glass panels */
 .panel-glass {
     background: linear-gradient(160deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);

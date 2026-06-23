@@ -16,9 +16,9 @@
         <p class="hero-desc">Create an <a href="{% url 'academic_year_create' %}">academic year</a>, then set up classes, courses, and enroll students.</p>
         {% endif %}
         <div class="hero-actions">
-            <a href="{% url 'enrollment_create' %}" class="btn btn-primary btn-lg">
+            <a href="{% url 'student_create' %}" class="btn btn-primary btn-lg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-                Enroll student
+                Register student
             </a>
             <a href="{% url 'bulk_student_attendance' %}" class="btn btn-ghost btn-lg">Mark attendance</a>
             <a href="{% url 'class_list' %}?type=college" class="btn btn-ghost btn-lg">College courses</a>
@@ -28,22 +28,22 @@
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="hero-metric-stack">
-            <div class="hero-metric-card">
+            <a href="{% url 'student_attendance_list' %}" class="hero-metric-card hero-metric-link">
                 <span class="float-label">Today</span>
                 <span class="float-value" data-count="{{ stats.attendance_today }}">{{ stats.attendance_today }}</span>
                 <span class="float-sub">attendance records</span>
-            </div>
-            <div class="hero-metric-card hero-metric-accent">
+            </a>
+            <a href="{% url 'attendance_report' %}" class="hero-metric-card hero-metric-accent hero-metric-link">
                 <span class="float-label">Present rate</span>
                 <span class="float-value"><span data-count="{{ stats.attendance_rate }}">{{ stats.attendance_rate }}</span>%</span>
                 <span class="float-sub">today's snapshot</span>
-            </div>
+            </a>
         </div>
     </div>
 </section>
 
 <section class="stats-grid stats-grid-pro">
-    <article class="stat-card stat-card-pro stat-indigo animate-in" style="--i:0">
+    <a href="{% url 'class_list' %}" class="stat-card stat-card-pro stat-card-link stat-indigo animate-in" style="--i:0">
         <div class="stat-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
         </div>
@@ -52,8 +52,9 @@
             <span class="stat-label">Classes &amp; courses</span>
             <span class="stat-sub">{{ stats.school_classes }} school · {{ stats.college_courses }} college</span>
         </div>
-    </article>
-    <article class="stat-card stat-card-pro stat-violet animate-in" style="--i:1">
+        <span class="stat-go" aria-hidden="true">→</span>
+    </a>
+    <a href="{% url 'student_list' %}" class="stat-card stat-card-pro stat-card-link stat-violet animate-in" style="--i:1">
         <div class="stat-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
         </div>
@@ -62,8 +63,9 @@
             <span class="stat-label">Active students</span>
             <span class="stat-sub">{{ stats.school_students }} school · {{ stats.college_students }} college</span>
         </div>
-    </article>
-    <article class="stat-card stat-card-pro stat-cyan animate-in" style="--i:2">
+        <span class="stat-go" aria-hidden="true">→</span>
+    </a>
+    <a href="{% url 'teacher_list' %}" class="stat-card stat-card-pro stat-card-link stat-cyan animate-in" style="--i:2">
         <div class="stat-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </div>
@@ -72,8 +74,9 @@
             <span class="stat-label">Active teachers</span>
             <span class="stat-sub">Faculty &amp; assignments</span>
         </div>
-    </article>
-    <article class="stat-card stat-card-pro stat-amber animate-in" style="--i:3">
+        <span class="stat-go" aria-hidden="true">→</span>
+    </a>
+    <a href="{% url 'student_fee_list' %}" class="stat-card stat-card-pro stat-card-link stat-amber animate-in" style="--i:3">
         <div class="stat-icon">
             {% include 'partials/icon_inr.html' %}
         </div>
@@ -82,7 +85,8 @@
             <span class="stat-label">Pending fees</span>
             <span class="stat-sub">Outstanding in ₹ INR</span>
         </div>
-    </article>
+        <span class="stat-go" aria-hidden="true">→</span>
+    </a>
 </section>
 
 <section class="section-block">
@@ -190,7 +194,7 @@
         <h2>Quick actions</h2>
         <ul class="quick-links quick-links-pro">
             <li><a href="{% url 'school_class_create' %}"><span>Add class / course</span><em>→</em></a></li>
-            <li><a href="{% url 'enrollment_create' %}"><span>Enroll student</span><em>→</em></a></li>
+            <li><a href="{% url 'student_create' %}"><span>Register student</span><em>→</em></a></li>
             <li><a href="{% url 'fee_payment_create' %}"><span>Record payment</span><em>→</em></a></li>
             <li><a href="{% url 'attendance_report' %}"><span>Attendance report</span><em>→</em></a></li>
             <li><a href="{% url 'fee_report' %}"><span>Fee defaulters</span><em>→</em></a></li>
