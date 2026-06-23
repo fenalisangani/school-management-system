@@ -16,6 +16,8 @@ services:
         value: school-management-system-0xaa.onrender.com
       - key: CSRF_TRUSTED_ORIGINS
         value: https://school-management-system-0xaa.onrender.com
+      - key: LOGIN_PAGE_VISIBLE
+        value: "False"
       - key: WEB_CONCURRENCY
         value: "4"
       - key: DATABASE_URL

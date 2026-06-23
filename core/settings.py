@@ -171,6 +171,10 @@ CURRENCY_CODE = 'INR'
 CURRENCY_SYMBOL = '₹'
 APP_VERSION = '1.0.0'
 
+# Set LOGIN_PAGE_VISIBLE=False in env to show a maintenance screen instead of /login/.
+# All login code stays in place — flip back to True (or remove the var) to restore it.
+LOGIN_PAGE_VISIBLE = env_bool('LOGIN_PAGE_VISIBLE', True)
+
 USE_I18N = True
 
 USE_TZ = True

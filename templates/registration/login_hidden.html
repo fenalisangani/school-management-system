@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temporarily unavailable — School Management System</title>
+    <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20260623">
+</head>
+<body class="auth-body auth-body-pro">
+    <div class="auth-bg-grid" aria-hidden="true"></div>
+    <div class="auth-layout auth-layout-hidden">
+        <div class="auth-card auth-card-pro auth-card-hidden">
+            <div class="auth-brand">
+                <div class="auth-logo auth-logo-lg">{% include 'partials/logo.html' %}</div>
+                <h1>Sign-in temporarily unavailable</h1>
+                <p>The login page is hidden while updates are in progress. Your data and login code are unchanged.</p>
+            </div>
+            <p class="auth-hint auth-hint-muted">If you are the administrator, set <strong>LOGIN_PAGE_VISIBLE=True</strong> in your environment to restore access.</p>
+        </div>
+    </div>
+</body>
+</html>

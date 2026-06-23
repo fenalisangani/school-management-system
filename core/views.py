@@ -1,9 +1,13 @@
 import json
 from datetime import timedelta
 
+from django.conf import settings
+from django.contrib.auth.views import LoginView
 from django.db.models import Count
 from django.shortcuts import render
 from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_not_required
 
 from attendance.models import AttendanceStatus, StudentAttendance
 from classes.models import AcademicYear, InstitutionType, SchoolClass
@@ -78,3 +82,15 @@ def dashboard(request):
         'has_attendance': has_attendance,
         'has_fees': has_fees,
     })
+
+
+@method_decorator(login_not_required, name='dispatch')
+class ToggleLoginView(LoginView):
+    """Login page with an env toggle to show maintenance instead (LOGIN_PAGE_VISIBLE)."""
+    template_name = 'registration/login.html'
+    redirect_authenticated_user = True
+
+    def dispatch(self, request, *args, **kwargs):
+        if not settings.LOGIN_PAGE_VISIBLE:
+            return render(request, 'registration/login_hidden.html', status=503)
+        return super().dispatch(request, *args, **kwargs)

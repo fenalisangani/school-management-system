@@ -2,10 +2,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.contrib.auth.decorators import login_not_required
 from django.urls import include, path
 
-from core.views import dashboard
+from core.views import ToggleLoginView, dashboard
 
 # Rebrand the Django admin panel for the School Management System.
 admin.site.site_header = 'School Management System'
@@ -16,10 +15,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path(
         'login/',
-        login_not_required(auth_views.LoginView.as_view(
-            template_name='registration/login.html',
-            redirect_authenticated_user=True,
-        )),
+        ToggleLoginView.as_view(),
         name='login',
     ),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),

@@ -1990,6 +1990,31 @@ a:hover { color: var(--accent-2); }
     font-size: 1.65rem;
 }
 
+.auth-layout-hidden {
+    grid-template-columns: 1fr;
+    place-items: center;
+}
+
+.auth-card-hidden {
+    max-width: 480px;
+    margin: 2rem auto;
+    text-align: center;
+}
+
+.auth-card-hidden .auth-brand {
+    text-align: center;
+}
+
+.auth-card-hidden .auth-logo-lg {
+    margin: 0 auto 1.25rem;
+}
+
+.auth-hint-muted {
+    margin-top: 1.5rem;
+    font-size: 0.78rem;
+    line-height: 1.5;
+}
+
 @media (max-width: 960px) {
     .hero-advanced { grid-template-columns: 1fr; padding: 2rem; }
     .hero-visual-advanced { height: auto; margin-top: 0.5rem; }
