@@ -172,7 +172,10 @@ TIME_ZONE = 'Asia/Kolkata'
 # Currency — all fee amounts are stored and displayed in Indian Rupees (INR)
 CURRENCY_CODE = 'INR'
 CURRENCY_SYMBOL = '₹'
-APP_VERSION = '1.0.0'
+APP_VERSION = '2.0.0'
+UI_VERSION = 'unified-platform'
+STATIC_ASSETS_VERSION = os.environ.get('STATIC_ASSETS_VERSION', '20260624c')
+BUILD_COMMIT = os.environ.get('RENDER_GIT_COMMIT', 'local')
 
 # Set LOGIN_PAGE_VISIBLE=False in env to show a maintenance screen instead of /login/.
 # All login code stays in place — flip back to True (or remove the var) to restore it.

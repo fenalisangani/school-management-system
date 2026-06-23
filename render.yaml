@@ -20,6 +20,8 @@ services:
         value: "True"
       - key: SHOW_DEMO_LOGIN_HINT
         value: "False"
+      - key: STATIC_ASSETS_VERSION
+        value: "20260624c"
       - key: WEB_CONCURRENCY
         value: "4"
       - key: DATABASE_URL

@@ -37,4 +37,7 @@ def site_settings(request):
         'header_title': header_title,
         'header_subtitle': header_subtitle,
         'show_demo_login_hint': getattr(settings, 'SHOW_DEMO_LOGIN_HINT', settings.DEBUG),
+        'static_assets_version': getattr(settings, 'STATIC_ASSETS_VERSION', '20260624c'),
+        'ui_version': getattr(settings, 'UI_VERSION', 'unified-platform'),
+        'build_commit': getattr(settings, 'BUILD_COMMIT', 'local'),
     }
