@@ -1684,45 +1684,6 @@ a:hover { color: var(--accent-2); }
     border-color: rgba(165, 180, 252, 0.35);
 }
 
-/* Platform strip */
-.platform-strip {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem 1.5rem;
-    padding: 1rem 1.35rem;
-    margin-bottom: 1.75rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-}
-
-.platform-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    min-width: 140px;
-}
-
-.platform-item strong {
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: var(--text);
-}
-
-.platform-item span {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-}
-
-.platform-divider {
-    width: 1px;
-    height: 36px;
-    background: var(--border);
-    flex-shrink: 0;
-}
-
 /* Stats — pro cards */
 .stats-grid-pro {
     gap: 1.15rem;
@@ -2040,8 +2001,6 @@ a:hover { color: var(--accent-2); }
         flex-direction: row;
     }
     .hero-metric-card { flex: 1; }
-    .platform-divider { display: none; }
-    .platform-strip { gap: 1rem; }
     .auth-layout { grid-template-columns: 1fr; }
     .auth-showcase { display: none; }
     .auth-card-pro { margin: 1.5rem; }
