@@ -14,3 +14,13 @@ services:
         value: "False"
       - key: WEB_CONCURRENCY
         value: "4"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: school-db
+          property: connectionString
+
+databases:
+  - name: school-db
+    plan: free
+    databaseName: schoolmanagement
+    user: schoolmanagement

@@ -736,6 +736,7 @@ a:hover { color: var(--accent-2); }
 }
 
 .stat-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+.stat-sub { display: block; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem; opacity: 0.85; }
 
 /* Sections */
 .section-block { margin-bottom: 1.75rem; }

@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.utils import timezone
 
 from attendance.models import AttendanceStatus, StudentAttendance
-from classes.models import AcademicYear, SchoolClass
+from classes.models import AcademicYear, InstitutionType, SchoolClass
 from fees.models import PaymentStatus, StudentFeeAssignment
 from students.models import Student
 from teachers.models import Teacher
@@ -16,7 +16,11 @@ def dashboard(request):
     active_year = AcademicYear.objects.filter(is_active=True, is_archived=False).first()
     stats = {
         'classes': SchoolClass.objects.filter(status='active').count(),
+        'school_classes': SchoolClass.objects.filter(status='active', institution_type=InstitutionType.SCHOOL).count(),
+        'college_courses': SchoolClass.objects.filter(status='active', institution_type=InstitutionType.COLLEGE).count(),
         'students': Student.objects.filter(status='active').count(),
+        'school_students': Student.objects.filter(status='active', institution_type=InstitutionType.SCHOOL).count(),
+        'college_students': Student.objects.filter(status='active', institution_type=InstitutionType.COLLEGE).count(),
         'teachers': Teacher.objects.filter(employment_status='active').count(),
         'pending_fees': StudentFeeAssignment.objects.filter(
             status__in=[PaymentStatus.PENDING, PaymentStatus.PARTIAL],

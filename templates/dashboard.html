@@ -48,7 +48,8 @@
         </div>
         <div class="stat-body">
             <span class="stat-value">{{ stats.classes }}</span>
-            <span class="stat-label">Active classes</span>
+            <span class="stat-label">Classes & courses</span>
+            <span class="stat-sub">{{ stats.school_classes }} school · {{ stats.college_courses }} college</span>
         </div>
     </article>
     <article class="stat-card stat-violet">
@@ -58,6 +59,7 @@
         <div class="stat-body">
             <span class="stat-value">{{ stats.students }}</span>
             <span class="stat-label">Active students</span>
+            <span class="stat-sub">{{ stats.school_students }} school · {{ stats.college_students }} college</span>
         </div>
     </article>
     <article class="stat-card stat-cyan">
