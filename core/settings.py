@@ -82,9 +82,10 @@ if DEBUG and _tunnel_file.exists():
     _add_csrf_origin(_tunnel_file.read_text(encoding='utf-8-sig').strip())
 
 # Quick tunnels terminate TLS; trust forwarded proto during local demos.
-if DEBUG:
+_on_render = bool(os.environ.get('RENDER_EXTERNAL_HOSTNAME'))
+if DEBUG or not _on_render:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    # System env may carry production ALLOWED_HOSTS — always permit local dev.
+    # System env may carry production ALLOWED_HOSTS — always permit local dev off Render.
     for _local in ('127.0.0.1', 'localhost', '[::1]'):
         _add_allowed_host(_local)
     for _port in (8000, 8765):
