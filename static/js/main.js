@@ -140,4 +140,48 @@
             counterObserver.observe(el);
         });
     }
+
+    /* Dashboard stat cards — clickable even on legacy article markup */
+    function bindStatCardNavigation(card, href) {
+        if (!href || card.dataset.navBound) return;
+        card.dataset.navBound = 'true';
+        card.classList.add('stat-card-link');
+        card.style.cursor = 'pointer';
+        card.setAttribute('role', 'link');
+        card.setAttribute('tabindex', '0');
+        card.addEventListener('click', function (e) {
+            if (e.defaultPrevented) return;
+            window.location.assign(href);
+        });
+        card.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                window.location.assign(href);
+            }
+        });
+    }
+
+    function hrefForStatLabel(label, index) {
+        var text = (label || '').trim().toLowerCase();
+        if (text.indexOf('class') !== -1 || text.indexOf('course') !== -1) return '/classes/';
+        if (text.indexOf('student') !== -1) return '/students/';
+        if (text.indexOf('teacher') !== -1) return '/teachers/';
+        if (text.indexOf('fee') !== -1) return '/fees/assignments/';
+        return ['/classes/', '/students/', '/teachers/', '/fees/assignments/'][index] || null;
+    }
+
+    document.querySelectorAll('.stats-grid .stat-card, .stats-grid-pro .stat-card, .stats-grid-pro a.stat-card').forEach(function (card, index) {
+        if (card.tagName === 'A') {
+            var existing = card.getAttribute('href');
+            if (existing) return;
+        }
+        var labelEl = card.querySelector('.stat-label');
+        var href = hrefForStatLabel(labelEl ? labelEl.textContent : '', index);
+        bindStatCardNavigation(card, href);
+    });
+
+    document.querySelectorAll('.hero-metric-card:not(a)').forEach(function (card, index) {
+        var href = index === 0 ? '/attendance/students/' : '/attendance/reports/';
+        bindStatCardNavigation(card, href);
+    });
 })();

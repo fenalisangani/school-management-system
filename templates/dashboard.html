@@ -255,4 +255,24 @@
     {% endif %}
 })();
 </script>
+<script>
+(function () {
+    /* Inline fallback — stat cards must navigate even if cached main.js is stale */
+    var routes = ['/classes/', '/students/', '/teachers/', '/fees/assignments/'];
+    document.querySelectorAll('.stats-grid .stat-card, .stats-grid-pro .stat-card').forEach(function (card, i) {
+        if (card.tagName === 'A' && card.getAttribute('href')) return;
+        var label = (card.querySelector('.stat-label') || {}).textContent || '';
+        var href = routes[i];
+        var lower = label.toLowerCase();
+        if (lower.indexOf('class') !== -1 || lower.indexOf('course') !== -1) href = '/classes/';
+        else if (lower.indexOf('student') !== -1) href = '/students/';
+        else if (lower.indexOf('teacher') !== -1) href = '/teachers/';
+        else if (lower.indexOf('fee') !== -1) href = '/fees/assignments/';
+        card.style.cursor = 'pointer';
+        card.setAttribute('role', 'link');
+        card.setAttribute('tabindex', '0');
+        card.addEventListener('click', function () { window.location.assign(href); });
+    });
+})();
+</script>
 {% endblock %}

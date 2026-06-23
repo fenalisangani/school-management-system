@@ -1719,11 +1719,29 @@ a:hover { color: var(--accent-2); }
     font-variant-numeric: tabular-nums;
 }
 
-a.stat-card-link {
+a.stat-card-link,
+.stat-card[data-nav-bound="true"] {
     text-decoration: none !important;
     color: inherit !important;
     cursor: pointer;
     position: relative;
+    z-index: 2;
+    pointer-events: auto;
+}
+
+a.stat-card,
+a.stat-card-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-in {
+        opacity: 1;
+        transform: none;
+        animation: none;
+    }
 }
 
 a.stat-card-link:hover {
