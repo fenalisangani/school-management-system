@@ -12,7 +12,7 @@ from django.utils import timezone
 from core.view_helpers import confirm_delete, paginate, render_model_form
 from core.forms import ReportFilterForm
 from core.report_helpers import report_date_label, scope_label
-from core.report_pdf import build_report_pdf
+from core.report_pdf import build_report_pdf, pdf_inr
 from core.scope_filters import apply_payment_date_range
 
 from .forms import (
@@ -230,7 +230,7 @@ def fee_report_pdf(request):
             p.receipt_number,
             p.assignment.student.full_name,
             p.assignment.fee_structure.school_class.name,
-            f'₹{p.amount}',
+            pdf_inr(p.amount),
             p.get_payment_mode_display(),
             timezone.localtime(p.paid_at).strftime('%d %b %Y'),
         ]
@@ -242,13 +242,13 @@ def fee_report_pdf(request):
         meta_lines=[
             f'<b>Period:</b> {report_date_label(filter_form)}',
             f'<b>Scope:</b> {scope_label(filter_form)}',
-            f'<b>Total collected (INR):</b> ₹{total_collected}',
         ],
-        headers=['Receipt', 'Student', 'Class', 'Amount', 'Mode', 'Paid on'],
+        headers=['Receipt', 'Student', 'Class', 'Amount (INR)', 'Mode', 'Paid on'],
         rows=payment_rows,
-        summary_lines=[
-            f'Payments in period: {payments.count()}',
-            f'Outstanding defaulters: {defaulters.count()}',
+        summary_stats=[
+            {'label': 'Total collected', 'value': pdf_inr(total_collected), 'tone': 'success'},
+            {'label': 'Payments in period', 'value': payments.count(), 'tone': 'default'},
+            {'label': 'Outstanding defaulters', 'value': defaulters.count(), 'tone': 'warning'},
         ],
     )
 

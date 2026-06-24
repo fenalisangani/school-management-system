@@ -10,7 +10,7 @@ from django.utils import timezone
 
 from core.forms import ClassScopeFilterForm, ReportFilterForm
 from core.report_helpers import report_date_label, scope_label
-from core.report_pdf import build_report_pdf
+from core.report_pdf import build_report_pdf, pdf_inr
 from core.scope_filters import apply_date_range, filter_attendance_queryset
 from core.view_helpers import paginate, render_model_form
 from students.models import StudentEnrollment
@@ -256,10 +256,13 @@ def attendance_report_pdf(request):
         ],
         headers=['Student', 'Present', 'Total days', 'Attendance %', 'Status'],
         rows=rows,
-        summary_lines=[
-            f'Total students: {len(summaries)}',
-            f'Below minimum ({min_pct}%): {len(defaulters)}',
+        summary_stats=[
+            {'label': 'Total students', 'value': len(summaries), 'tone': 'default'},
+            {'label': 'On track', 'value': len(summaries) - len(defaulters), 'tone': 'success'},
+            {'label': f'Below {min_pct}%', 'value': len(defaulters), 'tone': 'danger'},
         ],
+        row_statuses=['bad' if s['short'] else 'ok' for s in summaries],
+        status_col=4,
     )
 
 
