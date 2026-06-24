@@ -184,6 +184,9 @@ a:hover { color: var(--accent-2); }
     border-radius: var(--radius-sm);
     padding: 0.85rem;
     font-size: 0.8rem;
+    color: var(--text-sidebar);
+    line-height: 1.4;
+    margin: 0;
 }
 
 .sidebar-tip strong { color: #e2e8f0; display: block; margin-bottom: 0.25rem; }

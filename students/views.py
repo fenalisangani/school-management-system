@@ -70,7 +70,7 @@ def student_create(request):
         reverse('student_list'),
         cascade_form=True,
         submit_label='Register student',
-        subtitle='Name, ID, DOB, gender, phone — plus class/course, division, and semester (college)',
+        subtitle='Add a new student and enroll them in a class.',
     )
 
 
@@ -130,7 +130,7 @@ def enrollment_create(request):
         'Enroll Student',
         reverse('student_list'),
         cascade_form=True,
-        subtitle='School: class + division · College: course + division + semester',
+        subtitle='Enroll an existing student in a class.',
     )
 
 

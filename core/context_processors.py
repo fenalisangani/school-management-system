@@ -7,9 +7,9 @@ def site_settings(request):
     path = request.path
 
     page_titles = {
-        '/': ('Dashboard', 'School & college analytics workspace'),
-        '/classes/': ('Classes & Courses', 'School standards · College programs'),
-        '/students/': ('Students', 'School & college enrollment'),
+        '/': ('Dashboard', 'Overview & quick actions'),
+        '/classes/': ('Classes & Courses', 'Classes and courses'),
+        '/students/': ('Students', 'Student records'),
         '/teachers/': ('Teachers', 'Faculty & assignments'),
         '/fees/': ('Fees', 'Billing & payments'),
         '/attendance/': ('Attendance', 'Daily records & reports'),
@@ -17,7 +17,7 @@ def site_settings(request):
     }
 
     header_title = 'School Management System'
-    header_subtitle = 'Institution management workspace'
+    header_subtitle = 'School management'
 
     for prefix, (title, subtitle) in page_titles.items():
         if prefix == '/' and path == '/':
@@ -31,13 +31,10 @@ def site_settings(request):
         'CURRENCY_CODE': getattr(settings, 'CURRENCY_CODE', 'INR'),
         'CURRENCY_SYMBOL': getattr(settings, 'CURRENCY_SYMBOL', '₹'),
         'current_year': now.year,
-        'app_version': getattr(settings, 'APP_VERSION', '1.0.0'),
         'header_date': now.strftime('%a, %d %b %Y'),
         'header_time': now.strftime('%I:%M %p'),
         'header_title': header_title,
         'header_subtitle': header_subtitle,
-        'show_demo_login_hint': getattr(settings, 'SHOW_DEMO_LOGIN_HINT', settings.DEBUG),
         'static_assets_version': getattr(settings, 'STATIC_ASSETS_VERSION', '20260624c'),
-        'ui_version': getattr(settings, 'UI_VERSION', 'unified-platform'),
         'build_commit': getattr(settings, 'BUILD_COMMIT', 'local'),
     }

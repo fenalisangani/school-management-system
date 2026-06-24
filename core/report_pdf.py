@@ -35,7 +35,7 @@ BRAND_SURFACE = colors.HexColor('#f8fafc')
 
 LOGO_PATH = Path(settings.BASE_DIR) / 'static' / 'img' / 'pdf_logo.png'
 INSTITUTION_NAME = 'School Management System'
-INSTITUTION_TAGLINE = 'School & College ERP · Attendance & Reports'
+INSTITUTION_TAGLINE = 'Attendance & fee reports'
 
 
 def pdf_inr(amount):
@@ -277,13 +277,7 @@ def build_report_pdf(
     story.append(Spacer(1, 16))
     story.append(HRFlowable(width='40%', thickness=0.5, color=BRAND_BORDER, hAlign='LEFT'))
     story.append(Paragraph(
-        '<b>Prepared by</b> ___________________________ &nbsp;&nbsp;&nbsp; '
-        '<b>Verified by</b> ___________________________',
-        styles['signature'],
-    ))
-    story.append(Spacer(1, 4))
-    story.append(Paragraph(
-        'This is a computer-generated report from the School Management System.',
+        'Computer-generated report.',
         styles['footer'],
     ))
 

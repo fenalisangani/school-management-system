@@ -5,13 +5,9 @@
 {% block content %}
 <section class="hero-banner hero-advanced">
     <div class="hero-content">
-        <div class="hero-badges">
-            <span class="hero-pill">School &amp; College ERP</span>
-            <span class="hero-pill hero-pill-live"><span class="pulse-dot"></span> Live workspace</span>
-        </div>
-        <h1 class="hero-title">Unified<br><span class="gradient-text">Institution Platform</span></h1>
+        <h1 class="hero-title">Dashboard</h1>
         {% if active_year %}
-        <p class="hero-desc">Academic year <strong>{{ active_year.name }}</strong> — manage school sections and college semesters, fees, and daily attendance from one advanced dashboard.</p>
+        <p class="hero-desc">Academic year <strong>{{ active_year.name }}</strong> — classes, fees, and attendance at a glance.</p>
         {% else %}
         <p class="hero-desc">Create an <a href="{% url 'academic_year_create' %}">academic year</a>, then set up classes, courses, and enroll students.</p>
         {% endif %}
@@ -72,7 +68,6 @@
         <div class="stat-body">
             <span class="stat-value" data-count="{{ stats.teachers }}">{{ stats.teachers }}</span>
             <span class="stat-label">Active teachers</span>
-            <span class="stat-sub">Faculty &amp; assignments</span>
         </div>
         <span class="stat-go" aria-hidden="true">→</span>
     </a>
@@ -83,7 +78,6 @@
         <div class="stat-body">
             <span class="stat-value" data-count="{{ stats.pending_fees }}">{{ stats.pending_fees }}</span>
             <span class="stat-label">Pending fees</span>
-            <span class="stat-sub">Outstanding fees</span>
         </div>
         <span class="stat-go" aria-hidden="true">→</span>
     </a>
@@ -91,14 +85,12 @@
 
 <section class="section-block">
     <div class="section-head">
-        <h2>Analytics</h2>
-        <p>Real-time attendance trends &amp; fee health</p>
+        <h2>Overview</h2>
     </div>
     <div class="chart-grid chart-grid-pro">
         <div class="panel-card panel-glass">
             <div class="panel-head">
                 <h2>Attendance — last 7 days</h2>
-                <span class="panel-tag">Live</span>
             </div>
             {% if has_attendance %}
             <div class="chart-wrap"><canvas id="attendanceChart" height="220"></canvas></div>
@@ -112,7 +104,6 @@
         <div class="panel-card panel-glass">
             <div class="panel-head">
                 <h2>Fee status breakdown</h2>
-                <span class="panel-tag">Fees</span>
             </div>
             {% if has_fees %}
             <div class="chart-wrap"><canvas id="feeChart" height="220"></canvas></div>
@@ -129,52 +120,41 @@
 <section class="section-block">
     <div class="section-head">
         <h2>Modules</h2>
-        <p>Enterprise modules for school &amp; college operations</p>
     </div>
     <div class="module-grid module-grid-pro">
         <a href="{% url 'class_list' %}" class="module-card module-card-pro module-indigo">
             <div class="module-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
             </div>
-            <span class="module-tag">Dual track</span>
             <h3>Classes &amp; Courses</h3>
-            <p>School standards · College programs · Divisions</p>
             <span class="module-arrow">→</span>
         </a>
         <a href="{% url 'student_list' %}" class="module-card module-card-pro module-cyan">
             <div class="module-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
             </div>
-            <span class="module-tag">Enrollment</span>
             <h3>Students</h3>
-            <p>Registration · Semester enroll · Documents</p>
             <span class="module-arrow">→</span>
         </a>
         <a href="{% url 'teacher_list' %}" class="module-card module-card-pro module-violet">
             <div class="module-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </div>
-            <span class="module-tag">Faculty</span>
             <h3>Teachers</h3>
-            <p>Profiles · Class assignments · Workload</p>
             <span class="module-arrow">→</span>
         </a>
         <a href="{% url 'fee_structure_list' %}" class="module-card module-card-pro module-amber">
             <div class="module-icon">
                 {% include 'partials/icon_inr.html' %}
             </div>
-            <span class="module-tag">Finance</span>
-            <h3>Fees (₹)</h3>
-            <p>Structures · Payments · Receipts · Reports</p>
+            <h3>Fees</h3>
             <span class="module-arrow">→</span>
         </a>
         <a href="{% url 'bulk_student_attendance' %}" class="module-card module-card-pro module-emerald">
             <div class="module-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
             </div>
-            <span class="module-tag">Daily ops</span>
             <h3>Attendance</h3>
-            <p>Bulk marking · Analytics · Export</p>
             <span class="module-arrow">→</span>
         </a>
     </div>
@@ -182,7 +162,7 @@
 
 <section class="section-block two-col">
     <div class="panel-card panel-glass">
-        <h2>Smart workflow</h2>
+        <h2>Workflow</h2>
         <ol class="workflow-steps workflow-steps-pro">
             <li><span class="step-num">1</span> <strong>School:</strong> Class → Division → Enroll → Attendance</li>
             <li><span class="step-num">2</span> <strong>College:</strong> Course → Semester → Division → Enroll</li>

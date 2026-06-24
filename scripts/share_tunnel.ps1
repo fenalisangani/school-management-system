@@ -52,6 +52,5 @@ Write-Host "Opens dashboard directly — no login required (demo mode)."
 Write-Host "Press Ctrl+C to stop."
 
 $env:TUNNEL_URL = $TunnelUrl
-$env:SHOW_DEMO_LOGIN_HINT = "True"
 $env:LOGIN_REQUIRED = "False"
 py manage.py runserver $Port

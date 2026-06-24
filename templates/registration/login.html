@@ -17,13 +17,8 @@
         <aside class="auth-showcase">
             <div class="auth-showcase-inner">
                 <div class="auth-logo auth-logo-lg">{% include 'partials/logo.html' %}</div>
-                <h2>School &amp; College<br><span class="gradient-text">Management Platform</span></h2>
-                <p>One advanced workspace for classes, courses, semesters, fees, and attendance.</p>
-                <ul class="auth-feature-list">
-                    <li>School — Class · Division · Attendance</li>
-                    <li>College — Course · Semester · Division</li>
-                    <li>Reports, receipts &amp; analytics</li>
-                </ul>
+                <h2>School Management System</h2>
+                <p>Manage classes, students, fees, and attendance in one place.</p>
             </div>
         </aside>
         <div class="auth-card auth-card-pro">
@@ -49,10 +44,6 @@
                 <input type="hidden" name="next" value="{{ next }}">
                 <button type="submit" class="btn btn-primary btn-lg auth-submit">Sign in to dashboard</button>
             </form>
-
-            {% if show_demo_login_hint %}
-            <p class="auth-hint">Demo login: <strong>admin</strong> / <strong>Admin@12345</strong></p>
-            {% endif %}
         </div>
     </div>
 </body>

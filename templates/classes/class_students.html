@@ -13,13 +13,7 @@
 <div class="page-header">
     <div class="page-header-text">
         <h1>{{ school_class.name }} — Students</h1>
-        <p class="page-subtitle">
-            {% if school_class.institution_type == 'college' %}
-            Course · {{ school_class.academic_year }} · Semester-wise
-            {% else %}
-            Class · {{ school_class.academic_year }} · Year-wise · Section-wise
-            {% endif %}
-        </p>
+        <p class="page-subtitle">{{ school_class.academic_year }}</p>
     </div>
     <div class="actions">
         <a href="{% url 'student_create' %}?class={{ school_class.pk }}&institution_type={{ school_class.institution_type }}" class="btn btn-primary">+ Register student</a>

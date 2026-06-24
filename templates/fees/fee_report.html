@@ -8,7 +8,7 @@
 <div class="page-header">
     <div class="page-header-text">
         <h1>Fee Reports</h1>
-        <p class="page-subtitle">Financial summary{% if date_range_label %} · {{ date_range_label }}{% endif %}{% if scope_label %} · {{ scope_label }}{% endif %}</p>
+        <p class="page-subtitle">{% if date_range_label %}{{ date_range_label }}{% endif %}{% if scope_label %}{% if date_range_label %} · {% endif %}{{ scope_label }}{% endif %}</p>
     </div>
     <div class="actions">
         <a href="{% url 'fee_report_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-primary">⬇ Download PDF</a>

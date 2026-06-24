@@ -210,8 +210,8 @@ BUILD_COMMIT = os.environ.get('RENDER_GIT_COMMIT', 'local')
 # All login code stays in place — flip back to True (or remove the var) to restore it.
 LOGIN_PAGE_VISIBLE = env_bool('LOGIN_PAGE_VISIBLE', True)
 
-# Demo credentials on the login page — shown locally (DEBUG=True), hidden on production.
-SHOW_DEMO_LOGIN_HINT = env_bool('SHOW_DEMO_LOGIN_HINT', DEBUG)
+# Deprecated: demo login hint removed from UI. Kept for env compatibility only.
+SHOW_DEMO_LOGIN_HINT = env_bool('SHOW_DEMO_LOGIN_HINT', False)
 
 USE_I18N = True
 
