@@ -243,7 +243,7 @@ def fee_report_pdf(request):
             f'<b>Period:</b> {report_date_label(filter_form)}',
             f'<b>Scope:</b> {scope_label(filter_form)}',
         ],
-        headers=['Receipt', 'Student', 'Class', 'Amount (INR)', 'Mode', 'Paid on'],
+        headers=['Receipt', 'Student', 'Class', 'Amount', 'Mode', 'Paid on'],
         rows=payment_rows,
         summary_stats=[
             {'label': 'Total collected', 'value': pdf_inr(total_collected), 'tone': 'success'},
@@ -264,7 +264,7 @@ def fee_payments_export(request):
     writer = csv.writer(response)
     writer.writerow([
         'Receipt', 'Student ID', 'Student', 'Class', 'Structure',
-        'Amount (INR)', 'Late Fee (INR)', 'Mode', 'Paid At',
+        'Amount', 'Late fee', 'Mode', 'Paid At',
     ])
     for p in payments:
         writer.writerow([

@@ -9,7 +9,7 @@
                 </div>
             </div>
             <p class="footer-about">
-                Reliable management for classes, students, teachers, fees in <strong>{{ CURRENCY_SYMBOL }} {{ CURRENCY_CODE }}</strong>, and daily attendance — built for accuracy and audit-ready records.
+                Reliable management for classes, students, teachers, fees, and daily attendance — built for accuracy and audit-ready records.
             </p>
             <div class="footer-trust">
                 <span class="footer-trust-item">
@@ -29,7 +29,7 @@
                 <li><a href="{% url 'class_list' %}">Classes & subjects</a></li>
                 <li><a href="{% url 'student_list' %}">Student registration</a></li>
                 <li><a href="{% url 'teacher_list' %}">Teachers</a></li>
-                <li><a href="{% url 'fee_structure_list' %}">Fees (INR)</a></li>
+                <li><a href="{% url 'fee_structure_list' %}">Fees</a></li>
                 <li><a href="{% url 'student_attendance_list' %}">Attendance</a></li>
             </ul>
         </div>
@@ -51,7 +51,6 @@
                 <li><a href="{% url 'dashboard' %}">Help & workflow</a></li>
                 <li><a href="{% url 'attendance_report' %}">Attendance analytics</a></li>
                 <li><span class="footer-muted">UI {{ ui_version }} · v{{ app_version }}</span></li>
-                <li><span class="footer-muted">Fees: {{ CURRENCY_SYMBOL }} only</span></li>
             </ul>
         </div>
     </div>
@@ -62,8 +61,6 @@
         </p>
         <p class="footer-legal">
             <span>Academic year data stays on your server.</span>
-            <span class="footer-sep">·</span>
-            <span>Payments recorded in Indian Rupees (INR)</span>
         </p>
     </div>
 </footer>

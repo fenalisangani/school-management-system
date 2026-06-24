@@ -11,7 +11,7 @@
         </div>
         <h1 class="hero-title">Unified<br><span class="gradient-text">Institution Platform</span></h1>
         {% if active_year %}
-        <p class="hero-desc">Academic year <strong>{{ active_year.name }}</strong> — manage school sections and college semesters, fees in ₹ INR, and daily attendance from one advanced dashboard.</p>
+        <p class="hero-desc">Academic year <strong>{{ active_year.name }}</strong> — manage school sections and college semesters, fees, and daily attendance from one advanced dashboard.</p>
         {% else %}
         <p class="hero-desc">Create an <a href="{% url 'academic_year_create' %}">academic year</a>, then set up classes, courses, and enroll students.</p>
         {% endif %}
@@ -83,7 +83,7 @@
         <div class="stat-body">
             <span class="stat-value" data-count="{{ stats.pending_fees }}">{{ stats.pending_fees }}</span>
             <span class="stat-label">Pending fees</span>
-            <span class="stat-sub">Outstanding in ₹ INR</span>
+            <span class="stat-sub">Outstanding fees</span>
         </div>
         <span class="stat-go" aria-hidden="true">→</span>
     </a>
@@ -112,7 +112,7 @@
         <div class="panel-card panel-glass">
             <div class="panel-head">
                 <h2>Fee status breakdown</h2>
-                <span class="panel-tag">INR</span>
+                <span class="panel-tag">Fees</span>
             </div>
             {% if has_fees %}
             <div class="chart-wrap"><canvas id="feeChart" height="220"></canvas></div>
@@ -186,7 +186,7 @@
         <ol class="workflow-steps workflow-steps-pro">
             <li><span class="step-num">1</span> <strong>School:</strong> Class → Division → Enroll → Attendance</li>
             <li><span class="step-num">2</span> <strong>College:</strong> Course → Semester → Division → Enroll</li>
-            <li><span class="step-num">3</span> Teachers, fee structures, and INR payments</li>
+            <li><span class="step-num">3</span> Teachers, fee structures, and payments</li>
             <li><span class="step-num">4</span> Reports, receipts, and CSV exports</li>
         </ol>
     </div>

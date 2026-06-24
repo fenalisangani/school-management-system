@@ -35,7 +35,7 @@ BRAND_SURFACE = colors.HexColor('#f8fafc')
 
 LOGO_PATH = Path(settings.BASE_DIR) / 'static' / 'img' / 'pdf_logo.png'
 INSTITUTION_NAME = 'School Management System'
-INSTITUTION_TAGLINE = 'School & College ERP · Fees in INR · Attendance & Reports'
+INSTITUTION_TAGLINE = 'School & College ERP · Attendance & Reports'
 
 
 def pdf_inr(amount):

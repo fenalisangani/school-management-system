@@ -8,7 +8,7 @@
 <div class="page-header">
     <div class="page-header-text">
         <h1>Fee Reports</h1>
-        <p class="page-subtitle">Financial summary in <strong>INR ({{ CURRENCY_SYMBOL }})</strong>{% if date_range_label %} · {{ date_range_label }}{% endif %}{% if scope_label %} · {{ scope_label }}{% endif %}</p>
+        <p class="page-subtitle">Financial summary{% if date_range_label %} · {{ date_range_label }}{% endif %}{% if scope_label %} · {{ scope_label }}{% endif %}</p>
     </div>
     <div class="actions">
         <a href="{% url 'fee_report_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-primary">⬇ Download PDF</a>
@@ -25,7 +25,7 @@
         </div>
         <div class="stat-body">
             <span class="stat-value">{{ total_collected|inr }}</span>
-            <span class="stat-label">Total collected (INR)</span>
+            <span class="stat-label">Total collected</span>
         </div>
     </article>
     <article class="stat-card stat-amber">
@@ -41,10 +41,10 @@
 
 <div class="detail-grid">
     <div class="card" style="padding:0">
-        <h2 style="padding:1rem 1.15rem 0;margin:0;font-size:1rem">Recent payments (INR)</h2>
+        <h2 style="padding:1rem 1.15rem 0;margin:0;font-size:1rem">Recent payments</h2>
         <div class="table-scroll">
             <table class="data-table">
-                <thead><tr><th>Receipt</th><th>Student</th><th>Amount (INR)</th><th>Mode</th><th></th></tr></thead>
+                <thead><tr><th>Receipt</th><th>Student</th><th>Amount</th><th>Mode</th><th></th></tr></thead>
                 <tbody>
                     {% for p in payments %}
                     <tr>
@@ -62,7 +62,7 @@
         </div>
     </div>
     <div class="panel-card">
-        <h2>Outstanding (INR)</h2>
+        <h2>Outstanding</h2>
         <ul class="list-plain">
             {% for d in defaulters %}
             <li>{{ d.student }} — balance <strong>{{ d.balance|inr }}</strong></li>

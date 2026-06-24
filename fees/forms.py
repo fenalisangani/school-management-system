@@ -46,10 +46,10 @@ class FeeStructureItemForm(forms.ModelForm):
         model = FeeStructureItem
         fields = ['component', 'amount', 'frequency']
         labels = {
-            'amount': 'Amount (INR)',
+            'amount': 'Amount',
         }
         help_texts = {
-            'amount': 'Enter amount in Indian Rupees (₹).',
+            'amount': 'Enter amount in ₹.',
         }
         widgets = {
             'amount': forms.NumberInput(attrs=INR_ATTRS),
@@ -64,7 +64,7 @@ class StudentFeeAssignmentForm(forms.ModelForm):
             'scholarship_notes', 'due_date',
         ]
         labels = {
-            'discount_amount': 'Discount (INR)',
+            'discount_amount': 'Discount',
         }
         help_texts = {
             'discount_amount': 'Scholarship or discount amount in ₹.',
@@ -91,11 +91,11 @@ class FeePaymentForm(forms.ModelForm):
             'installment_number', 'late_fee', 'notes',
         ]
         labels = {
-            'amount': 'Payment amount (INR)',
-            'late_fee': 'Late fee (INR)',
+            'amount': 'Payment amount',
+            'late_fee': 'Late fee',
         }
         help_texts = {
-            'amount': 'Amount received in Indian Rupees (₹).',
+            'amount': 'Amount received in ₹.',
             'late_fee': 'Optional late fee in ₹.',
         }
         widgets = {

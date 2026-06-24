@@ -8,7 +8,7 @@
 <div class="page-header">
     <div class="page-header-text">
         <h1>Fee Structures</h1>
-        <p class="page-subtitle">All amounts in <strong>INR ({{ CURRENCY_SYMBOL }})</strong> — Indian Rupees</p>
+        <p class="page-subtitle">Fee structures and component amounts</p>
     </div>
     <div class="actions">
         <a href="{% url 'fee_structure_create' %}" class="btn btn-primary">+ New Structure</a>
@@ -28,7 +28,7 @@
 <div class="card">
     <div class="table-scroll">
         <table class="data-table">
-            <thead><tr><th>ID</th><th>Class</th><th>Year</th><th>Category</th><th>Components</th><th>Total (INR)</th><th>Actions</th></tr></thead>
+            <thead><tr><th>ID</th><th>Class</th><th>Year</th><th>Category</th><th>Components</th><th>Total</th><th>Actions</th></tr></thead>
             <tbody>
                 {% for fs in structures %}
                 <tr>

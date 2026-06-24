@@ -11,7 +11,7 @@ def site_settings(request):
         '/classes/': ('Classes & Courses', 'School standards · College programs'),
         '/students/': ('Students', 'School & college enrollment'),
         '/teachers/': ('Teachers', 'Faculty & assignments'),
-        '/fees/': ('Fees', f'Billing in {getattr(settings, "CURRENCY_SYMBOL", "₹")} INR'),
+        '/fees/': ('Fees', 'Billing & payments'),
         '/attendance/': ('Attendance', 'Daily records & reports'),
         '/admin/': ('Administration', 'System configuration'),
     }

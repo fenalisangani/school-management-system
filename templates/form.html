@@ -32,7 +32,7 @@
         {% endfor %}
 
         {% if formset %}
-        <h2 class="form-section-title">Fee components (amounts in INR ₹)</h2>
+        <h2 class="form-section-title">Fee components</h2>
         {{ formset.management_form }}
         <div id="fee-items" class="formset-grid">
             {% for item_form in formset %}

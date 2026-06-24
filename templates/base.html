@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="School Management System — Institution ERP for classes, students, teachers, fees in INR, and attendance.">
+    <meta name="description" content="School Management System — Institution ERP for classes, students, teachers, fees, and attendance.">
     <title>{% block title %}School Management System{% endblock %}</title>
     <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,7 +48,7 @@
                 </a>
                 <a href="{% url 'fee_structure_list' %}" class="nav-item {% if '/fees/' in request.path %}active{% endif %}">
                     {% include 'partials/icon_inr.html' %}
-                    Fees (INR)
+                    Fees
                 </a>
                 <a href="{% url 'student_attendance_list' %}" class="nav-item {% if '/attendance/' in request.path %}active{% endif %}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
@@ -65,7 +65,7 @@
             <div class="sidebar-footer">
                 <div class="sidebar-tip">
                     <strong>Dual-track platform</strong>
-                    <p>School sections + college semesters in one workspace. Fees in {{ CURRENCY_SYMBOL }} INR.</p>
+                    <p>School sections + college semesters in one workspace.</p>
                 </div>
             </div>
         </aside>
