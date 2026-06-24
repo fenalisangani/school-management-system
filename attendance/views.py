@@ -8,8 +8,10 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 
-from core.forms import ClassScopeFilterForm
-from core.scope_filters import filter_attendance_queryset
+from core.forms import ClassScopeFilterForm, ReportFilterForm
+from core.report_helpers import report_date_label, scope_label
+from core.report_pdf import build_report_pdf
+from core.scope_filters import apply_date_range, filter_attendance_queryset
 from core.view_helpers import paginate, render_model_form
 from students.models import StudentEnrollment
 
@@ -160,9 +162,12 @@ def teacher_attendance_create(request):
 
 
 def _attendance_summary(filter_form=None):
+    if filter_form is not None:
+        filter_form.is_valid()
     records = StudentAttendance.objects.all()
     if filter_form and filter_form.is_valid():
         records = filter_attendance_queryset(records, filter_form)
+        records = apply_date_range(records, filter_form, 'date')
 
     total_by_student = (
         records.values('student_id', 'student__full_name')
@@ -188,41 +193,34 @@ def _attendance_summary(filter_form=None):
 
 
 def attendance_report(request):
-    filter_form = ClassScopeFilterForm(request.GET or None)
+    filter_form = ReportFilterForm(request.GET or None)
     summaries, min_pct = _attendance_summary(filter_form)
-    scope_label = _scope_label(filter_form)
     return render(request, 'attendance/attendance_report.html', {
         'summaries': summaries,
         'defaulters': [s for s in summaries if s['short']],
         'min_pct': min_pct,
         'filter_form': filter_form,
-        'scope_label': scope_label,
+        'scope_label': scope_label(filter_form),
+        'date_range_label': report_date_label(filter_form),
     })
 
 
-def _scope_label(filter_form):
-    if not filter_form.is_valid():
-        return 'All classes'
-    parts = []
-    sc = filter_form.cleaned_data.get('school_class')
-    sec = filter_form.cleaned_data.get('section')
-    sem = filter_form.selected_semester()
-    if sc:
-        parts.append(str(sc.name))
-    if sec:
-        parts.append(f'Division {sec.name}')
-    if sem:
-        parts.append(f'Semester {sem}')
-    return ' · '.join(parts) if parts else 'All classes / courses'
+def _report_pdf_filename(prefix, filter_form):
+    if filter_form.is_valid():
+        date_from = filter_form.cleaned_data.get('date_from')
+        date_to = filter_form.cleaned_data.get('date_to')
+        if date_from and date_to:
+            return f'{prefix}_{date_from:%Y%m%d}_to_{date_to:%Y%m%d}.pdf'
+    return f'{prefix}_{timezone.localdate():%Y%m%d}.pdf'
 
 
 def attendance_report_export(request):
     """Download the attendance summary as a CSV (opens in Excel)."""
-    filter_form = ClassScopeFilterForm(request.GET or None)
+    filter_form = ReportFilterForm(request.GET or None)
     summaries, min_pct = _attendance_summary(filter_form)
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = (
-        f'attachment; filename="attendance_report_{timezone.localdate()}.csv"'
+        f'attachment; filename="{_report_pdf_filename("attendance_report", filter_form).replace(".pdf", ".csv")}"'
     )
     writer = csv.writer(response)
     writer.writerow(['Student', 'Present', 'Total Days', 'Attendance %', f'Below {min_pct}%?'])
@@ -232,6 +230,37 @@ def attendance_report_export(request):
             'Yes' if s['short'] else 'No',
         ])
     return response
+
+
+def attendance_report_pdf(request):
+    filter_form = ReportFilterForm(request.GET or None)
+    summaries, min_pct = _attendance_summary(filter_form)
+    defaulters = [s for s in summaries if s['short']]
+    rows = [
+        [
+            s['name'],
+            str(s['present']),
+            str(s['total']),
+            f"{s['percentage']}%",
+            'Below minimum' if s['short'] else 'On track',
+        ]
+        for s in summaries
+    ]
+    return build_report_pdf(
+        title='Attendance Report',
+        filename=_report_pdf_filename('attendance_report', filter_form),
+        meta_lines=[
+            f'<b>Period:</b> {report_date_label(filter_form)}',
+            f'<b>Scope:</b> {scope_label(filter_form)}',
+            f'<b>Minimum required:</b> {min_pct}%',
+        ],
+        headers=['Student', 'Present', 'Total days', 'Attendance %', 'Status'],
+        rows=rows,
+        summary_lines=[
+            f'Total students: {len(summaries)}',
+            f'Below minimum ({min_pct}%): {len(defaulters)}',
+        ],
+    )
 
 
 def attendance_rule_create(request):

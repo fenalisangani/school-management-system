@@ -10,5 +10,6 @@ urlpatterns = [
     path('teachers/add/', views.teacher_attendance_create, name='teacher_attendance_create'),
     path('reports/', views.attendance_report, name='attendance_report'),
     path('reports/export/', views.attendance_report_export, name='attendance_report_export'),
+    path('reports/pdf/', views.attendance_report_pdf, name='attendance_report_pdf'),
     path('rules/add/', views.attendance_rule_create, name='attendance_rule_create'),
 ]

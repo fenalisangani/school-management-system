@@ -41,3 +41,28 @@ def filter_enrollment_queryset(queryset, form):
     elif school_class and not school_class.uses_semesters:
         queryset = queryset.filter(semester__isnull=True)
     return queryset
+
+
+def apply_date_range(queryset, form, field_name):
+    """Filter queryset by ReportFilterForm date_from / date_to."""
+    if not form.is_valid():
+        return queryset
+    date_from = form.cleaned_data.get('date_from')
+    date_to = form.cleaned_data.get('date_to')
+    if date_from:
+        queryset = queryset.filter(**{f'{field_name}__gte': date_from})
+    if date_to:
+        queryset = queryset.filter(**{f'{field_name}__lte': date_to})
+    return queryset
+
+
+def apply_payment_date_range(queryset, form):
+    if not form.is_valid():
+        return queryset
+    date_from = form.cleaned_data.get('date_from')
+    date_to = form.cleaned_data.get('date_to')
+    if date_from:
+        queryset = queryset.filter(paid_at__date__gte=date_from)
+    if date_to:
+        queryset = queryset.filter(paid_at__date__lte=date_to)
+    return queryset

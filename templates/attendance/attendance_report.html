@@ -7,10 +7,11 @@
 <div class="page-header">
     <div class="page-header-text">
         <h1>Attendance Analytics</h1>
-        <p class="page-subtitle">Minimum required: <strong>{{ min_pct }}%</strong>{% if scope_label %} · {{ scope_label }}{% endif %}</p>
+        <p class="page-subtitle">Minimum required: <strong>{{ min_pct }}%</strong>{% if date_range_label %} · {{ date_range_label }}{% endif %}{% if scope_label %} · {{ scope_label }}{% endif %}</p>
     </div>
     <div class="actions">
-        <a href="{% url 'attendance_report_export' %}?{{ request.GET.urlencode }}" class="btn btn-primary">⬇ Export to Excel (CSV)</a>
+        <a href="{% url 'attendance_report_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-primary">⬇ Download PDF</a>
+        <a href="{% url 'attendance_report_export' %}?{{ request.GET.urlencode }}" class="btn btn-secondary">Export CSV</a>
         <a href="{% url 'attendance_rule_create' %}" class="btn btn-secondary">Configure rules</a>
     </div>
 </div>

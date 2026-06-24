@@ -8,10 +8,11 @@
 <div class="page-header">
     <div class="page-header-text">
         <h1>Fee Reports</h1>
-        <p class="page-subtitle">Financial summary in <strong>INR ({{ CURRENCY_SYMBOL }})</strong></p>
+        <p class="page-subtitle">Financial summary in <strong>INR ({{ CURRENCY_SYMBOL }})</strong>{% if date_range_label %} · {{ date_range_label }}{% endif %}{% if scope_label %} · {{ scope_label }}{% endif %}</p>
     </div>
     <div class="actions">
-        <a href="{% url 'fee_payments_export' %}" class="btn btn-primary">⬇ Export to Excel (CSV)</a>
+        <a href="{% url 'fee_report_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-primary">⬇ Download PDF</a>
+        <a href="{% url 'fee_payments_export' %}?{{ request.GET.urlencode }}" class="btn btn-secondary">Export CSV</a>
     </div>
 </div>
 

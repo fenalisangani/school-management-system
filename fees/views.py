@@ -10,6 +10,10 @@ from django.urls import reverse
 from django.utils import timezone
 
 from core.view_helpers import confirm_delete, paginate, render_model_form
+from core.forms import ReportFilterForm
+from core.report_helpers import report_date_label, scope_label
+from core.report_pdf import build_report_pdf
+from core.scope_filters import apply_payment_date_range
 
 from .forms import (
     FeePaymentForm,
@@ -163,13 +167,11 @@ def fee_receipt(request, pk):
     return render(request, 'fees/receipt.html', {'payment': payment})
 
 
-def fee_report(request):
-    from core.forms import ClassScopeFilterForm
-
-    filter_form = ClassScopeFilterForm(request.GET or None)
+def _fee_report_querysets(filter_form):
+    filter_form.is_valid()
     payments = FeePayment.objects.select_related(
         'assignment__student', 'assignment__fee_structure__school_class',
-    )
+    ).order_by('-paid_at')
     defaulters = StudentFeeAssignment.objects.filter(
         status__in=[PaymentStatus.PENDING, PaymentStatus.PARTIAL],
     ).select_related('student', 'fee_structure__school_class')
@@ -179,7 +181,9 @@ def fee_report(request):
         section = filter_form.cleaned_data.get('section')
         inst = filter_form.cleaned_data.get('institution_type')
         if inst:
-            payments = payments.filter(assignment__fee_structure__school_class__institution_type=inst)
+            payments = payments.filter(
+                assignment__fee_structure__school_class__institution_type=inst,
+            )
             defaulters = defaulters.filter(fee_structure__school_class__institution_type=inst)
         if school_class:
             payments = payments.filter(assignment__fee_structure__school_class=school_class)
@@ -190,30 +194,78 @@ def fee_report(request):
             ).values_list('student_id', flat=True)
             payments = payments.filter(assignment__student_id__in=student_ids)
             defaulters = defaulters.filter(student_id__in=student_ids)
+        payments = apply_payment_date_range(payments, filter_form)
 
     total_collected = payments.aggregate(total=Sum('amount'))['total'] or 0
+    return payments, defaulters, total_collected
+
+
+def _report_pdf_filename(prefix, filter_form):
+    if filter_form.is_valid():
+        date_from = filter_form.cleaned_data.get('date_from')
+        date_to = filter_form.cleaned_data.get('date_to')
+        if date_from and date_to:
+            return f'{prefix}_{date_from:%Y%m%d}_to_{date_to:%Y%m%d}.pdf'
+    return f'{prefix}_{timezone.localdate():%Y%m%d}.pdf'
+
+
+def fee_report(request):
+    filter_form = ReportFilterForm(request.GET or None)
+    payments, defaulters, total_collected = _fee_report_querysets(filter_form)
     return render(request, 'fees/fee_report.html', {
         'payments': payments[:50],
         'total_collected': total_collected,
         'defaulters': defaulters,
         'filter_form': filter_form,
+        'scope_label': scope_label(filter_form),
+        'date_range_label': report_date_label(filter_form),
     })
 
 
+def fee_report_pdf(request):
+    filter_form = ReportFilterForm(request.GET or None)
+    payments, defaulters, total_collected = _fee_report_querysets(filter_form)
+    payment_rows = [
+        [
+            p.receipt_number,
+            p.assignment.student.full_name,
+            p.assignment.fee_structure.school_class.name,
+            f'₹{p.amount}',
+            p.get_payment_mode_display(),
+            timezone.localtime(p.paid_at).strftime('%d %b %Y'),
+        ]
+        for p in payments[:200]
+    ]
+    return build_report_pdf(
+        title='Fee Collection Report',
+        filename=_report_pdf_filename('fee_report', filter_form),
+        meta_lines=[
+            f'<b>Period:</b> {report_date_label(filter_form)}',
+            f'<b>Scope:</b> {scope_label(filter_form)}',
+            f'<b>Total collected (INR):</b> ₹{total_collected}',
+        ],
+        headers=['Receipt', 'Student', 'Class', 'Amount', 'Mode', 'Paid on'],
+        rows=payment_rows,
+        summary_lines=[
+            f'Payments in period: {payments.count()}',
+            f'Outstanding defaulters: {defaulters.count()}',
+        ],
+    )
+
+
 def fee_payments_export(request):
-    """Download all fee payments as a CSV (opens in Excel)."""
+    """Download fee payments as CSV for the selected filters."""
+    filter_form = ReportFilterForm(request.GET or None)
+    payments, _, _ = _fee_report_querysets(filter_form)
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = (
-        f'attachment; filename="fee_payments_{timezone.localdate()}.csv"'
+        f'attachment; filename="{_report_pdf_filename("fee_payments", filter_form).replace(".pdf", ".csv")}"'
     )
     writer = csv.writer(response)
     writer.writerow([
         'Receipt', 'Student ID', 'Student', 'Class', 'Structure',
         'Amount (INR)', 'Late Fee (INR)', 'Mode', 'Paid At',
     ])
-    payments = FeePayment.objects.select_related(
-        'assignment__student', 'assignment__fee_structure__school_class',
-    ).order_by('-paid_at')
     for p in payments:
         writer.writerow([
             p.receipt_number,

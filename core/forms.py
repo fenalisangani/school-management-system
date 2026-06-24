@@ -1,6 +1,10 @@
 from django import forms
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 from classes.models import InstitutionType, SchoolClass, Section
+
+from core.report_helpers import default_report_dates
 
 
 class ClassScopeFilterForm(forms.Form):
@@ -63,3 +67,36 @@ class ClassScopeFilterForm(forms.Form):
             return int(value)
         except (TypeError, ValueError):
             return None
+
+
+class ReportFilterForm(ClassScopeFilterForm):
+    """Class scope filters plus a date range for PDF / export reports."""
+
+    date_from = forms.DateField(
+        required=False,
+        label='From date',
+        widget=forms.DateInput(attrs={'type': 'date'}),
+    )
+    date_to = forms.DateField(
+        required=False,
+        label='To date',
+        widget=forms.DateInput(attrs={'type': 'date'}),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.data:
+            today = timezone.localdate()
+            self.fields['date_from'].initial = today.replace(day=1)
+            self.fields['date_to'].initial = today
+
+    def clean(self):
+        cleaned = super().clean()
+        date_from = cleaned.get('date_from')
+        date_to = cleaned.get('date_to')
+        default_from, default_to = default_report_dates()
+        cleaned['date_from'] = date_from or default_from
+        cleaned['date_to'] = date_to or default_to
+        if cleaned['date_from'] > cleaned['date_to']:
+            raise ValidationError('From date must be on or before To date.')
+        return cleaned
